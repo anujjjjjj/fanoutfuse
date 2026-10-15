@@ -1,0 +1,107 @@
+{
+  "start": "2026-10-06T10:00:00Z",
+  "session": "planned-20",
+  "agents": [
+    {
+      "at": 0.0,
+      "duration": 4,
+      "parent": "branch-0"
+    },
+    {
+      "at": 9.473684210526315,
+      "duration": 4,
+      "parent": "branch-0"
+    },
+    {
+      "at": 18.94736842105263,
+      "duration": 4,
+      "parent": "branch-0"
+    },
+    {
+      "at": 28.42105263157895,
+      "duration": 4,
+      "parent": "branch-0"
+    },
+    {
+      "at": 37.89473684210526,
+      "duration": 4,
+      "parent": "branch-0"
+    },
+    {
+      "at": 47.36842105263158,
+      "duration": 4,
+      "parent": "branch-1"
+    },
+    {
+      "at": 56.8421052631579,
+      "duration": 4,
+      "parent": "branch-1"
+    },
+    {
+      "at": 66.3157894736842,
+      "duration": 4,
+      "parent": "branch-1"
+    },
+    {
+      "at": 75.78947368421052,
+      "duration": 4,
+      "parent": "branch-1"
+    },
+    {
+      "at": 85.26315789473684,
+      "duration": 4,
+      "parent": "branch-1"
+    },
+    {
+      "at": 94.73684210526316,
+      "duration": 4,
+      "parent": "branch-2"
+    },
+    {
+      "at": 104.21052631578948,
+      "duration": 4,
+      "parent": "branch-2"
+    },
+    {
+      "at": 113.6842105263158,
+      "duration": 4,
+      "parent": "branch-2"
+    },
+    {
+      "at": 123.15789473684211,
+      "duration": 4,
+      "parent": "branch-2"
+    },
+    {
+      "at": 132.6315789473684,
+      "duration": 4,
+      "parent": "branch-2"
+    },
+    {
+      "at": 142.10526315789474,
+      "duration": 4,
+      "parent": "branch-3"
+    },
+    {
+      "at": 151.57894736842104,
+      "duration": 4,
+      "parent": "branch-3"
+    },
+    {
+      "at": 161.05263157894737,
+      "duration": 4,
+      "parent": "branch-3"
+    },
+    {
+      "at": 170.52631578947367,
+      "duration": 4,
+      "parent": "branch-3"
+    },
+    {
+      "at": 180.0,
+      "duration": 4,
+      "parent": "branch-3"
+    }
+  ],
+  "expected": "none"
+}

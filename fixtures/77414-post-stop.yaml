@@ -1,0 +1,413 @@
+{
+  "start": "2026-10-06T10:00:00Z",
+  "session": "77414-post-stop",
+  "agents": [
+    {
+      "at": 0.0,
+      "duration": 1
+    },
+    {
+      "at": 0.8,
+      "duration": 1
+    },
+    {
+      "at": 1.6,
+      "duration": 1
+    },
+    {
+      "at": 2.4000000000000004,
+      "duration": 1
+    },
+    {
+      "at": 3.2,
+      "duration": 1
+    },
+    {
+      "at": 4.0,
+      "duration": 1
+    },
+    {
+      "at": 4.800000000000001,
+      "duration": 1
+    },
+    {
+      "at": 5.6000000000000005,
+      "duration": 1
+    },
+    {
+      "at": 6.4,
+      "duration": 1
+    },
+    {
+      "at": 7.2,
+      "duration": 1
+    },
+    {
+      "at": 8.0,
+      "duration": 1
+    },
+    {
+      "at": 8.8,
+      "duration": 1
+    },
+    {
+      "at": 9.600000000000001,
+      "duration": 1
+    },
+    {
+      "at": 10.4,
+      "duration": 1
+    },
+    {
+      "at": 11.200000000000001,
+      "duration": 1
+    },
+    {
+      "at": 12.0,
+      "duration": 1
+    },
+    {
+      "at": 12.8,
+      "duration": 1
+    },
+    {
+      "at": 13.600000000000001,
+      "duration": 1
+    },
+    {
+      "at": 14.4,
+      "duration": 1
+    },
+    {
+      "at": 15.200000000000001,
+      "duration": 1
+    },
+    {
+      "at": 16.0,
+      "duration": 1
+    },
+    {
+      "at": 16.8,
+      "duration": 1
+    },
+    {
+      "at": 17.6,
+      "duration": 1
+    },
+    {
+      "at": 18.400000000000002,
+      "duration": 1
+    },
+    {
+      "at": 19.200000000000003,
+      "duration": 1
+    },
+    {
+      "at": 20.0,
+      "duration": 1
+    },
+    {
+      "at": 20.8,
+      "duration": 1
+    },
+    {
+      "at": 21.6,
+      "duration": 1
+    },
+    {
+      "at": 22.400000000000002,
+      "duration": 1
+    },
+    {
+      "at": 23.200000000000003,
+      "duration": 1
+    },
+    {
+      "at": 24.0,
+      "duration": 1
+    },
+    {
+      "at": 24.8,
+      "duration": 1
+    },
+    {
+      "at": 25.6,
+      "duration": 1
+    },
+    {
+      "at": 26.400000000000002,
+      "duration": 1
+    },
+    {
+      "at": 27.200000000000003,
+      "duration": 1
+    },
+    {
+      "at": 28.0,
+      "duration": 1
+    },
+    {
+      "at": 28.8,
+      "duration": 1
+    },
+    {
+      "at": 29.6,
+      "duration": 1
+    },
+    {
+      "at": 30.400000000000002,
+      "duration": 1
+    },
+    {
+      "at": 31.200000000000003,
+      "duration": 1
+    },
+    {
+      "at": 32.0,
+      "duration": 1
+    },
+    {
+      "at": 32.800000000000004,
+      "duration": 1
+    },
+    {
+      "at": 33.6,
+      "duration": 1
+    },
+    {
+      "at": 34.4,
+      "duration": 1
+    },
+    {
+      "at": 35.2,
+      "duration": 1
+    },
+    {
+      "at": 36.0,
+      "duration": 1
+    },
+    {
+      "at": 36.800000000000004,
+      "duration": 1
+    },
+    {
+      "at": 37.6,
+      "duration": 1
+    },
+    {
+      "at": 38.400000000000006,
+      "duration": 1
+    },
+    {
+      "at": 39.2,
+      "duration": 1
+    },
+    {
+      "at": 40.0,
+      "duration": 1
+    },
+    {
+      "at": 40.800000000000004,
+      "duration": 1
+    },
+    {
+      "at": 41.6,
+      "duration": 1
+    },
+    {
+      "at": 42.400000000000006,
+      "duration": 1
+    },
+    {
+      "at": 43.2,
+      "duration": 1
+    },
+    {
+      "at": 44.0,
+      "duration": 1
+    },
+    {
+      "at": 44.800000000000004,
+      "duration": 1
+    },
+    {
+      "at": 45.6,
+      "duration": 1
+    },
+    {
+      "at": 46.400000000000006,
+      "duration": 1
+    },
+    {
+      "at": 47.2,
+      "duration": 1
+    },
+    {
+      "at": 48.0,
+      "duration": 1
+    },
+    {
+      "at": 48.800000000000004,
+      "duration": 1
+    },
+    {
+      "at": 49.6,
+      "duration": 1
+    },
+    {
+      "at": 50.400000000000006,
+      "duration": 1
+    },
+    {
+      "at": 51.2,
+      "duration": 1
+    },
+    {
+      "at": 52.0,
+      "duration": 1
+    },
+    {
+      "at": 52.800000000000004,
+      "duration": 1
+    },
+    {
+      "at": 53.6,
+      "duration": 1
+    },
+    {
+      "at": 54.400000000000006,
+      "duration": 1
+    },
+    {
+      "at": 55.2,
+      "duration": 1
+    },
+    {
+      "at": 56.0,
+      "duration": 1
+    },
+    {
+      "at": 56.800000000000004,
+      "duration": 1
+    },
+    {
+      "at": 57.6,
+      "duration": 1
+    },
+    {
+      "at": 58.400000000000006,
+      "duration": 1
+    },
+    {
+      "at": 59.2,
+      "duration": 1
+    },
+    {
+      "at": 60.0,
+      "duration": 1
+    },
+    {
+      "at": 60.800000000000004,
+      "duration": 1
+    },
+    {
+      "at": 61.6,
+      "duration": 1
+    },
+    {
+      "at": 62.400000000000006,
+      "duration": 1
+    },
+    {
+      "at": 63.2,
+      "duration": 1
+    },
+    {
+      "at": 64.0,
+      "duration": 1
+    },
+    {
+      "at": 64.8,
+      "duration": 1
+    },
+    {
+      "at": 65.60000000000001,
+      "duration": 1
+    },
+    {
+      "at": 66.4,
+      "duration": 1
+    },
+    {
+      "at": 67.2,
+      "duration": 1
+    },
+    {
+      "at": 68.0,
+      "duration": 1
+    },
+    {
+      "at": 68.8,
+      "duration": 1
+    },
+    {
+      "at": 69.60000000000001,
+      "duration": 1
+    },
+    {
+      "at": 70.4,
+      "duration": 1
+    },
+    {
+      "at": 71.2,
+      "duration": 1
+    },
+    {
+      "at": 72.0,
+      "duration": 1
+    },
+    {
+      "at": 72.8,
+      "duration": 1
+    },
+    {
+      "at": 73.60000000000001,
+      "duration": 1
+    },
+    {
+      "at": 74.4,
+      "duration": 1
+    },
+    {
+      "at": 75.2,
+      "duration": 1
+    },
+    {
+      "at": 76.0,
+      "duration": 1
+    },
+    {
+      "at": 76.80000000000001,
+      "duration": 1
+    },
+    {
+      "at": 77.60000000000001,
+      "duration": 1
+    },
+    {
+      "at": 78.4,
+      "duration": 1
+    },
+    {
+      "at": 79.2,
+      "duration": 1
+    }
+  ],
+  "action_ladder": [
+    "warn",
+    "contain",
+    "stop_background",
+    "pause"
+  ],
+  "expected": "spawn_rate"
+}

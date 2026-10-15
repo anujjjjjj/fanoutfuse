@@ -1,0 +1,32 @@
+{
+  "start": "2026-10-06T10:00:00Z",
+  "session": "normal-pr-review",
+  "agents": [
+    {
+      "at": 0,
+      "parent": "main",
+      "duration": 2
+    },
+    {
+      "at": 5,
+      "parent": "main",
+      "duration": 2
+    },
+    {
+      "at": 10,
+      "parent": "main",
+      "duration": 2
+    },
+    {
+      "at": 15,
+      "parent": "main",
+      "duration": 2
+    },
+    {
+      "at": 20,
+      "parent": "main",
+      "duration": 2
+    }
+  ],
+  "expected": "none"
+}

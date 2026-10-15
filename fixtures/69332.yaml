@@ -1,0 +1,14 @@
+{
+  "start": "2026-10-06T10:00:00Z",
+  "session": "69332",
+  "per_minute": [
+    2,
+    8,
+    17,
+    8,
+    16,
+    188
+  ],
+  "dispatch_window_seconds": 8,
+  "expected": "spawn_burst"
+}

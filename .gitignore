@@ -1,0 +1,4 @@
+/fanoutfuse
+/bin/
+*.test
+coverage.out
