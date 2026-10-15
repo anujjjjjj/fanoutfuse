@@ -23,8 +23,8 @@ brews:
     repository:
       owner: anujjjjjj
       name: homebrew-tap
-      token: '{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}'
     directory: Formula
+    skip_upload: true
     homepage: https://github.com/anujjjjjj/fanoutfuse
     description: Local runaway spawn detection and tree containment
     install: |
