@@ -19,7 +19,12 @@ import (
 )
 
 func TestLiveFilesToFuseTmuxSQLiteAndControl(t *testing.T) {
-	root := t.TempDir()
+	// macOS limits unix socket paths to 104 bytes, so keep the root short.
+	root, err := os.MkdirTemp("/tmp", "ff")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = os.RemoveAll(root) })
 	c := config.Default()
 	c.Home = filepath.Join(root, "state")
 	c.ClaudeRoot = filepath.Join(root, "profile")
