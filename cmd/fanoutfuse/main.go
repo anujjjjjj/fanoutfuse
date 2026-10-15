@@ -22,7 +22,7 @@ import (
 	"github.com/anujjjjjj/fanoutfuse/internal/tui"
 )
 
-const version = "1.0.0"
+var version = "1.0.0"
 
 func main() {
 	if err := run(os.Args[1:], os.Stdin, os.Stdout); err != nil {
@@ -32,7 +32,11 @@ func main() {
 }
 func run(args []string, in io.Reader, out io.Writer) error {
 	if len(args) == 0 {
-		fmt.Fprintln(out, "FanoutFuse v"+version+"\nUsage: fanoutfuse run|guard|status|stop|pause <session>|resume <session>|pm [--md] [incident]|doctor|install|uninstall|replay <fixture.yaml>|config --explain|purge")
+		fmt.Fprintln(out, "FanoutFuse v"+version+"\nUsage: fanoutfuse version|run|guard|status|stop|pause <session>|resume <session>|pm [--md] [incident]|doctor|install|uninstall|replay <fixture.yaml>|config --explain|purge")
+		return nil
+	}
+	if args[0] == "version" || args[0] == "--version" {
+		fmt.Fprintln(out, version)
 		return nil
 	}
 	// Keep the enforcement path free of config, database, socket, and process discovery work.
@@ -50,9 +54,6 @@ func run(args []string, in io.Reader, out io.Writer) error {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
 	switch args[0] {
-	case "version", "--version":
-		fmt.Fprintln(out, version)
-		return nil
 	case "run":
 		return daemon.Run(ctx, c)
 	case "config":

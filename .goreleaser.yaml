@@ -1,0 +1,33 @@
+version: 2
+project_name: fanoutfuse
+builds:
+  - main: ./cmd/fanoutfuse
+    binary: fanoutfuse
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w -X main.version={{ .Version }}
+archives:
+  - formats: [tar.gz]
+    name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+checksum:
+  name_template: checksums.txt
+brews:
+  - name: fanoutfuse
+    repository:
+      owner: anujjjjjj
+      name: homebrew-tap
+      token: '{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}'
+    directory: Formula
+    homepage: https://github.com/anujjjjjj/fanoutfuse
+    description: Local runaway spawn detection and tree containment
+    install: |
+      bin.install "fanoutfuse"
+    test: |
+      system "#{bin}/fanoutfuse", "version"

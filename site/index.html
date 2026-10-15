@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111315">
+<meta name="description" content="FanoutFuse watches local spawn rates and tree shape, contains runaway fan-out, and leaves a post-mortem. A single Go binary for macOS and Linux.">
+<title>FanoutFuse / keep the tree under control</title>
+<link rel="icon" href="mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="masthead wrap">
+<a class="wordmark" href="#" aria-label="FanoutFuse home"><span class="mark" aria-hidden="true">⌁</span> FanoutFuse<span class="version">/ v1</span></a>
+<nav aria-label="Main navigation"><a href="#evidence">Evidence</a><a href="#replay">Replay</a><a href="#install">Install <span aria-hidden="true">↗</span></a></nav>
+</header>
+<main id="main">
+<section class="hero wrap" aria-labelledby="hero-title">
+<div class="hero-copy"><div class="eyebrow"><span class="dot"></span> LOCAL PROCESS PROTECTION <span class="quiet">/ MACOS + LINUX</span></div>
+<h1 id="hero-title">Five tasks.<br>A hundred children.<br><span>A fuse in between.</span></h1>
+<p class="intro">Recursive work can outrun your stop button. Watch the spawn rate, contain the whole tree, and see exactly what happened.</p>
+<div class="hero-actions"><a class="button primary" href="#install">Install the fuse <span aria-hidden="true">↓</span></a><a class="text-link" href="#replay">Inspect a real replay <span aria-hidden="true">↗</span></a></div>
+<div class="micro">ONE BINARY <span>·</span> NO ROOT <span>·</span> NO NETWORK</div></div>
+<div class="instrument" id="instrument">
+<div class="panel-top"><span><span class="dot"></span> SESSION / 69332</span><span id="phase">OBSERVING</span></div>
+<div class="telemetry"><div><span class="label">DESCENDANTS</span><strong id="count">001</strong></div><div class="rate-box"><span class="label">SPAWNS / 10s</span><strong id="rate">01<span class="unit"> / 15</span></strong><svg class="sparkline" viewBox="0 0 180 32" role="img" aria-label="Spawn rate rises sharply before the fuse trips"><path id="spark" d="M0 29 L180 29"/></svg></div></div>
+<div class="tree-stage"><div class="heat" aria-hidden="true"></div><svg id="tree" viewBox="0 0 580 320" role="img" aria-label="Illustration of a spawn tree growing, accelerating, then freezing when the fuse trips"><g id="edges"></g><g id="nodes"></g></svg><div class="tree-legend"><span>ROOT → DESCENDANTS</span><span id="elapsed">T+00.0s</span></div><div class="fuse" aria-hidden="true"><span>FUSE</span><i></i><b>×</b><i></i></div></div>
+<div class="trip-status" role="status" aria-live="polite" id="trip-status">Watching spawn rate and tree shape.</div>
+<div class="panel-bottom"><span>ILLUSTRATIVE SEQUENCE / <span id="sequence">01 WATCH</span></span><button id="replay-button" type="button">↻ Replay</button></div>
+<noscript><p class="no-script">The fuse trips at the configured threshold. Enable JavaScript to play the illustrative sequence.</p></noscript>
+</div>
+</section>
+<div class="spec-strip wrap"><span><b>01</b> RATE + TREE DETECTION</span><span><b>02</b> VERIFIED CONTAINMENT</span><span><b>03</b> LOCAL POST-MORTEM</span></div>
+<section class="section wrap" id="evidence" aria-labelledby="evidence-title">
+<div class="section-heading"><div class="eyebrow">01 / THE INCIDENT LOG</div><h2 id="evidence-title">The curve is the problem.</h2><p>These are reported incidents, not benchmarks. The evidence pack records what happened when a small task became a growing tree.</p></div>
+<div class="evidence-table">
+<a class="evidence-row" href="https://github.com/anthropics/claude-code/issues/69332"><span class="issue">#69332 <span aria-hidden="true">↗</span></span><strong>188<span>spawns / minute</span></strong><p>~242 transcripts, 251 spawn calls. The per-minute curve went 2 → 8 → 17 → 8 → 16 → 188.</p></a>
+<a class="evidence-row" href="https://github.com/anthropics/claude-code/issues/68619"><span class="issue">#68619 <span aria-hidden="true">↗</span></span><strong>4M<span>tokens / under 5 minutes</span></strong><p>An entire 5-hour session limit consumed. Over 50% of a weekly limit lost to recursive spawning.</p></a>
+<a class="evidence-row" href="https://github.com/anthropics/claude-code/issues/77361"><span class="issue">#77361 <span aria-hidden="true">↗</span></span><strong>877<span>descendants</span></strong><p>The 5-level depth limit held. Breadth still produced an unreasonable number of calls.</p></a>
+<a class="evidence-row" href="https://github.com/anthropics/claude-code/issues/77414"><span class="issue">#77414 <span aria-hidden="true">↗</span></span><strong>~300<span>records after Stop</span></strong><p>256 further nested calls. CPU reached 100%; the machine needed a hard reboot.</p></a>
+<a class="evidence-row correction" href="https://github.com/anthropics/claude-code/issues/83195"><span class="issue">#83195 <span aria-hidden="true">↗</span></span><strong>Sync<span>hooks do block dispatch</span></strong><p>A synchronous pre-tool hook can enforce a count cap. Asynchronous hooks run too late. That distinction matters.</p></a>
+</div><p class="footnote">Reported figures from the project evidence pack, recorded 2026-10-06. Follow each issue for context.</p>
+</section>
+<section class="section wrap comparison" aria-labelledby="count-title">
+<div><div class="eyebrow">02 / BEYOND A COUNT CAP</div><h2 id="count-title">A ceiling can't<br>read the room.</h2><p>A synchronous count cap is useful. Keep it. But a total count doesn't tell you how fast the tree is growing, which branch is multiplying, or whether Stop actually reached its children.</p><p>FanoutFuse combines rate and tree rules with optional token-rate limits, then records each containment action and checks for continued spawning.</p></div>
+<div class="comparison-panel"><div class="panel-top">FIXTURE 69332 / FIRST TRIP</div><div class="comparison-line"><span>FanoutFuse</span><b>25</b><div class="bar"><i style="width:50%"></i></div><small>spawn_burst</small></div><div class="comparison-line count-cap"><span>Count cap @ 50</span><b>50</b><div class="bar"><i style="width:100%"></i></div><small>total count only</small></div><div class="comparison-note">25 spawns earlier in this replay.<br><span>Detection is only the first step.</span></div></div>
+</section>
+<section class="section wrap" aria-labelledby="works-title"><div class="section-heading"><div class="eyebrow">03 / THE STOP SEQUENCE</div><h2 id="works-title">Close the loop.</h2><p>A stop request needs a result. Every step leaves a record.</p></div>
+<ol class="steps"><li><span>01</span><h3>Detect</h3><p>Observe on-disk spawn metadata. Evaluate rate, growth, breadth, depth and configured budgets.</p></li><li><span>02</span><h3>Contain</h3><p>Write a fuse. A synchronous guard denies new dispatches, even when the daemon is down.</p></li><li><span>03</span><h3>Stop</h3><p>Request a background stop. The default ladder keeps destructive escalation opt-in.</p></li><li><span>04</span><h3>Verify</h3><p>Watch for new spawns. Record what continued; pause or kill only under your configured policy.</p></li><li><span>05</span><h3>Post-mortem</h3><p>One screen for the rule, tree, token estimates and timestamped actions. Export as Markdown.</p></li></ol>
+</section>
+<section class="section wrap" id="replay" aria-labelledby="replay-title"><div class="section-heading split"><div><div class="eyebrow">04 / REPRODUCE IT</div><h2 id="replay-title">The record, unedited.</h2></div><p>Actual output from the checked-in demo. Replays simulate the action ladder; they do not control live processes. Continued synthetic spawns are counted, not hidden.</p></div>
+<div class="terminal"><div class="panel-top"><span>REPLAY / 69332</span><span>RECORDED OUTPUT</span></div><pre tabindex="0" aria-label="Recorded replay output"><code id="demo-replay">$ fanoutfuse replay fixtures/69332.yaml
+TRIP rule=spawn_burst value=15 threshold=15 at agent 25 (2026-10-06T10:02:06.588235294Z)
+tripped at agent 25; count-cap@50 would trip at agent 50 (25 earlier)
+step=contain at=2026-10-06T10:02:06.588235294Z ok=true spawns_after_trip=0
+step=stop_background at=2026-10-06T10:02:06.588235294Z ok=true spawns_after_trip=214
+step=verify at=2026-10-06T10:05:48.957446808Z ok=true spawns_after_trip=214
+incident 1791280926588-440ae4dd10177340 · total=239 spawns_after_trip=214</code></pre></div>
+<div class="terminal"><div class="panel-top"><span>POST-MORTEM / POST-STOP FIXTURE</span><span>RECORDED OUTPUT</span></div><pre tabindex="0" aria-label="Recorded post-mortem screen"><code id="demo-pm">$ fanoutfuse pm
+FanoutFuse · incident 1791280823200-998431594798bd64 · claude replay/v1 · - · session 77414-post-stop
+TRIPPED spawn_rate 30 &gt; 30 at 2026-10-06T10:00:23Z · time-to-trip 23.2s
+Spawns █▇█▇█▇█▇ · total 100 (after trip: 70) · depth max 3
+Tokens 332850 in / 62450 out / 90000 cache · ~$1.9623 API-equivalent (estimate, price table v1)
+Contained 2026-10-06T10:02:00Z · Projected if unstopped (+5m): ~180 agents (rate extrapolation)
+Tree (by depth): d0=1 d1=3 d2=27 d3=70
+Top-5 branches                         tokens   kids
+ a0055                    general-purpose     7550      0
+ a0077                    Explore          7210      0
+ a0033                    Plan             7140      0
+ a0088                    general-purpose     7030      0
+ a0044                    Explore          6960      0
+Actions:
+ 10:00:23.200 contain: ok · spawns_after_trip=0
+ 10:00:23.200 stop_background: ok · spawns_after_trip=24
+ 10:00:43.200 verify: ok · spawns_after_trip=24
+ 10:00:43.200 pause: ok · spawns_after_trip=46
+ 10:02:00.200 verify: ok · spawns_after_trip=46</code></pre></div>
+<p class="footnote">The post-mortem above is the separate post-stop fixture. Projected agents and API-equivalent cost are estimates, not a bill or a quota measurement.</p>
+</section>
+<section class="section wrap install-section" id="install" aria-labelledby="install-title"><div><div class="eyebrow">05 / FIT THE FUSE</div><h2 id="install-title">Small binary.<br>Short setup.</h2><p>macOS + Linux. No root required.</p><p>Install the binary, register the synchronous guard, then run the daemon in a dedicated terminal.</p></div><div class="install-commands"><div class="command"><span class="label">01 / HOMEBREW</span><pre><code>brew install anujjjjjj/tap/fanoutfuse</code></pre><button class="copy" data-copy="brew" aria-label="Copy Homebrew install command">Copy</button></div><div class="command"><span class="label">OR / GO 1.24+</span><pre><code>go install github.com/anujjjjjj/fanoutfuse/cmd/fanoutfuse@latest</code></pre><button class="copy" data-copy="go" aria-label="Copy Go install command">Copy</button></div><div class="command"><span class="label">02 / REGISTER GUARD</span><pre><code>fanoutfuse install</code></pre><button class="copy" data-copy="install" aria-label="Copy guard install command">Copy</button></div><div class="command"><span class="label">03 / WATCH IN A DEDICATED TERMINAL</span><pre><code>fanoutfuse run</code></pre><button class="copy" data-copy="run" aria-label="Copy daemon command">Copy</button></div><p class="footnote">Check your setup with <code>fanoutfuse doctor</code>. Remove the guard with <code>fanoutfuse uninstall</code>.</p><p id="copy-status" class="sr-only" role="status"></p></div></section>
+<section class="section wrap privacy" aria-labelledby="privacy-title"><div class="privacy-symbol" aria-hidden="true">[ ∅ ]</div><div><div class="eyebrow">06 / YOUR MACHINE IS THE BOUNDARY</div><h2 id="privacy-title">No data leaves. No prompts kept.</h2><p>Local only. No network calls, cloud account or telemetry. FanoutFuse reads metadata from local transcripts and stores incident metadata on your machine. It never stores prompt or response text.</p><p class="footnote">Control runs over a local Unix socket. Stop the daemon and use <code>fanoutfuse purge</code> to remove its stored metadata.</p></div></section>
+<section class="section wrap faq" aria-labelledby="faq-title"><div><div class="eyebrow">07 / BEFORE YOU RUN IT</div><h2 id="faq-title">Operator notes.</h2></div><div class="questions">
+<details><summary>Why keep my existing count cap?</summary><p>A hard ceiling still helps. FanoutFuse adds rate and tree-shape detection, a stop sequence with verification, and an incident record. The two controls work together.</p></details>
+<details><summary>Does install start the daemon?</summary><p>No. It registers the synchronous guard. Run <code>fanoutfuse run</code> separately to watch sessions and detect new trips. Use <code>fanoutfuse doctor</code> to check the setup.</p></details>
+<details><summary>Will it kill my main session?</summary><p>The default ladder contains new spawns and requests a background stop. Pause and kill require an opt-in policy. A process-group kill can end the session and lose in-flight work.</p></details>
+<details><summary>What if spawning continues after Stop?</summary><p>The verifier watches for further spawns and records them. An opted-in escalation policy can pause or signal the process group. A stop request alone is never treated as proof that the tree stopped.</p></details>
+<details><summary>Does it measure my subscription quota?</summary><p>No. Token totals and API-equivalent cost estimates are metadata-based. They are not a live subscription quota reading. Quota-velocity rules are outside the current release.</p></details>
+<details><summary>Can I try it without a live session?</summary><p>Yes. Run <code>fanoutfuse replay fixtures/69332.yaml</code> from the repository, then <code>fanoutfuse pm</code>. The replay uses synthetic fixture events and simulated stop actions.</p></details>
+<details><summary>Which platforms are supported?</summary><p>macOS and Linux, on arm64 and amd64. Windows is outside the current release. Run doctor to check transcript discovery, synchronous hook health and tmux availability.</p></details>
+<details><summary>What happens to my transcript files?</summary><p>Transcript directories are read-only. Installation backs up and updates the local hook settings. Uninstall removes the guard; purge removes FanoutFuse's own stored metadata after the daemon is stopped.</p></details>
+</div></section>
+</main>
+<footer class="wrap"><a class="wordmark" href="#">⌁ FanoutFuse</a><span>LOCAL BY DESIGN. QUIET UNTIL IT MATTERS.</span><a href="https://github.com/anujjjjjj/fanoutfuse">Source on GitHub ↗</a></footer>
+</body></html>

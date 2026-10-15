@@ -134,6 +134,7 @@ func (w *Watcher) scan(watcher *fsnotify.Watcher, emit func(model.Event)) {
 					ParentSnake string `json:"parent_agent_id"`
 					ParentID    string `json:"parentId"`
 					Type        string `json:"subagent_type"`
+					AgentType   string `json:"agentType"`
 					Model       string `json:"model"`
 				}
 				if json.Unmarshal(b, &meta) == nil {
@@ -143,6 +144,9 @@ func (w *Watcher) scan(watcher *fsnotify.Watcher, emit func(model.Event)) {
 					}
 					if parent == "" {
 						parent = meta.ParentID
+					}
+					if meta.Type == "" {
+						meta.Type = meta.AgentType
 					}
 					emit(model.Event{Kind: "attribute", Session: sid, Agent: aid, Parent: parent, Type: meta.Type, Model: meta.Model, At: now})
 				}
