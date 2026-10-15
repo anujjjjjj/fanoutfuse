@@ -1,0 +1,139 @@
+# FanoutFuse demo (2026-10-15 IST)
+
+$ fanoutfuse replay fixtures/69332.yaml
+TRIP rule=spawn_burst value=15 threshold=15 at agent 25 (2026-10-06T10:02:06.588235294Z)
+tripped at agent 25; count-cap@50 would trip at agent 50 (25 earlier)
+step=contain at=2026-10-06T10:02:06.588235294Z ok=true spawns_after_trip=0
+step=stop_background at=2026-10-06T10:02:06.588235294Z ok=true spawns_after_trip=214
+step=verify at=2026-10-06T10:05:48.957446808Z ok=true spawns_after_trip=214
+incident 1791280926588-440ae4dd10177340 · total=239 spawns_after_trip=214
+$ fanoutfuse replay fixtures/68619-burst.yaml
+TRIP rule=spawn_burst value=15 threshold=15 at agent 15 (2026-10-06T10:00:02.52Z)
+tripped at agent 15; count-cap@50 would trip at agent 50 (35 earlier)
+step=contain at=2026-10-06T10:00:02.52Z ok=true spawns_after_trip=0
+step=stop_background at=2026-10-06T10:00:02.52Z ok=true spawns_after_trip=55
+step=verify at=2026-10-06T10:00:53.42Z ok=true spawns_after_trip=55
+incident 1791280802520-6c721d75a1dc81c5 · total=70 spawns_after_trip=55
+$ fanoutfuse replay fixtures/77361-breadth.yaml
+TRIP rule=breadth_per_parent value=10 threshold=10 at agent 10 (2026-10-06T10:01:03Z)
+tripped at agent 10; count-cap@50 would trip at agent 50 (40 earlier)
+step=contain at=2026-10-06T10:01:03Z ok=true spawns_after_trip=0
+step=stop_background at=2026-10-06T10:01:03Z ok=true spawns_after_trip=50
+step=verify at=2026-10-06T10:07:34Z ok=true spawns_after_trip=50
+incident 1791280863000-181e9c3d2d5f602b · total=60 spawns_after_trip=50
+$ fanoutfuse replay fixtures/77414-post-stop.yaml
+TRIP rule=spawn_rate value=30 threshold=30 at agent 30 (2026-10-06T10:00:23.2Z)
+tripped at agent 30; count-cap@50 would trip at agent 50 (20 earlier)
+step=contain at=2026-10-06T10:00:23.2Z ok=true spawns_after_trip=0
+step=stop_background at=2026-10-06T10:00:23.2Z ok=true spawns_after_trip=24
+step=verify at=2026-10-06T10:00:43.2Z ok=true spawns_after_trip=24
+step=pause at=2026-10-06T10:00:43.2Z ok=true spawns_after_trip=46
+step=verify at=2026-10-06T10:02:00.2Z ok=true spawns_after_trip=46
+incident 1791280823200-998431594798bd64 · total=100 spawns_after_trip=70
+$ fanoutfuse replay fixtures/normal-pr-review.yaml
+NO TRIP
+count-cap@50: never reached (5 agents)
+$ fanoutfuse replay fixtures/planned-20.yaml
+NO TRIP
+count-cap@50: never reached (20 agents)
+$ echo '{"session_id":"69332","tool_name":"Agent"}' | fanoutfuse guard
+{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"FanoutFuse tripped (spawn_burst 15/10s > 15). Do not spawn subagents; complete remaining work directly."}}
+
+$ fanoutfuse pm
+FanoutFuse · incident 1791280823200-998431594798bd64 · claude replay/v1 · - · session 77414-post-stop
+TRIPPED spawn_rate 30 > 30 at 2026-10-06T10:00:23Z · time-to-trip 23.2s
+Spawns █▇█▇█▇█▇ · total 100 (after trip: 70) · depth max 3
+Tokens 332850 in / 62450 out / 90000 cache · ~$1.9623 API-equivalent (estimate, price table v1)
+Contained 2026-10-06T10:02:00Z · Projected if unstopped (+5m): ~180 agents (rate extrapolation)
+Tree (by depth): d0=1 d1=3 d2=27 d3=70
+Top-5 branches                         tokens   kids
+ a0055                    general-purpose     7550      0
+ a0077                    Explore          7210      0
+ a0033                    Plan             7140      0
+ a0088                    general-purpose     7030      0
+ a0044                    Explore          6960      0
+Actions:
+ 10:00:23.200 contain: ok · spawns_after_trip=0
+ 10:00:23.200 stop_background: ok · spawns_after_trip=24
+ 10:00:43.200 verify: ok · spawns_after_trip=24
+ 10:00:43.200 pause: ok · spawns_after_trip=46
+ 10:02:00.200 verify: ok · spawns_after_trip=46
+
+## pm --md (replay 77414)
+# FanoutFuse post-mortem · -
+
+| Key facts | Value |
+| --- | --- |
+| Incident | 1791280823200-998431594798bd64 |
+| Platform | claude replay/v1 |
+| Project | - |
+| Session | 77414-post-stop |
+| TRIPPED | spawn_rate 30 &gt;= 30 |
+| Tripped at | 2026-10-06T10:00:23Z |
+| Time-to-trip | 23.2s |
+| Contained | 2026-10-06T10:02:00Z |
+| Spawns | █▇█▇█▇█▇ · total 100 · after trip 70 |
+| Max depth | 3 |
+| Tokens | 332850 in / 62450 out / 90000 cache |
+| Cost | ~$1.9623 API-equivalent (estimate, price table v1) |
+| Projected if unstopped (+5m) | ~180 agents (rate extrapolation) |
+
+## Tree (by depth)
+
+| Depth | Agents |
+| --- | ---: |
+| 0 | 1 |
+| 1 | 3 |
+| 2 | 27 |
+| 3 | 70 |
+
+## Top-5 branches
+
+| Agent | Subagent type | Tokens | Kids |
+| --- | --- | ---: | ---: |
+| a0055 | general-purpose | 7550 | 0 |
+| a0077 | Explore | 7210 | 0 |
+| a0033 | Plan | 7140 | 0 |
+| a0088 | general-purpose | 7030 | 0 |
+| a0044 | Explore | 6960 | 0 |
+
+## Actions:
+
+| Step | At | Status | Spawns after trip |
+| --- | --- | --- | ---: |
+| contain | 2026-10-06T10:00:23.2Z | ok | 0 |
+| stop_background | 2026-10-06T10:00:23.2Z | ok | 24 |
+| verify | 2026-10-06T10:00:43.2Z | ok | 24 |
+| pause | 2026-10-06T10:00:43.2Z | ok | 46 |
+| verify | 2026-10-06T10:02:00.2Z | ok | 46 |
+
+## Live Claude Code (tmux, total_spawns trip=1)
+✻ Sautéed for 3s · done 5:31 PM
+❯ Launch the second subagent now with the Agent tool (reply hi). Report the tool result verbatim in one line.
+● Agent(Reply with hi)
+  ⎿  Initializing…
+  ⎿  Error: PreToolUse:Agent hook error: FanoutFuse tripped (total_spawns 1 > 1). Do not spawn subagents; complete remaining work directly.
+● The second subagent did not launch. The Agent tool returned this error: PreToolUse:Agent hook error: FanoutFuse tripped (total_spawns 1 > 1). Do not spawn
+  subagents; complete remaining work directly.
+✻ Worked for 4s · done 5:33 PM
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ⏵⏵ bypass permissions on (shift+tab to cycle) · ← for agents
+
+FanoutFuse · incident 1792065713890-2cff602547bf9829 · claude 2.1.300 (Claude Code) · /tmp/fflive · session 74d52db1-4619-47d9-a2c2-c819fa03a761
+TRIPPED total_spawns 1 > 1 at 2026-10-15T12:01:53Z · time-to-trip 0s
+Spawns █ · total 1 (after trip: 0) · depth max 1
+Tokens 12 in / 764 out / 246649 cache · ~$0.0855 API-equivalent (estimate, price table v1)
+Contained 2026-10-15T12:02:13Z · Projected if unstopped (+5m): ~6 agents (rate extrapolation)
+Tree (by depth): d0=1 d1=2
+Top-5 branches                         tokens   kids
+ main                     general-purpose   247425      1
+ af091b08c0b25563c                            0      0
+ below                                        0      0
+Actions:
+ 17:31:53.890 contain: ok · spawns_after_trip=0
+ 17:31:53.890 tmux_chord_1: ok · spawns_after_trip=0
+ 17:31:53.890 tmux_chord_2: ok · spawns_after_trip=0
+ 17:31:53.890 stop_background: ok · spawns_after_trip=0
+ 17:32:13.890 verify: ok · spawns_after_trip=0
