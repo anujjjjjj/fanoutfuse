@@ -4,6 +4,7 @@ package model
 import "time"
 
 type Event struct {
+	SpawnDepth                                  *int
 	Kind                                        string
 	Session, Agent, Parent, ToolID, Type, Model string
 	At                                          time.Time
@@ -11,6 +12,7 @@ type Event struct {
 	TokensIn, TokensOut, TokensCache            int64
 }
 type Node struct {
+	SpawnDepth                       *int   `json:"spawn_depth,omitempty"`
 	ID                               string `json:"agent_id"`
 	Parent                           string `json:"parent_id"`
 	Depth                            int    `json:"depth"`

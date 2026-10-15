@@ -78,6 +78,23 @@ func run(args []string, in io.Reader, out io.Writer) error {
 		if (args[0] == "pause" || args[0] == "resume") && len(args) != 2 {
 			return fmt.Errorf("%s requires a session id or pid", args[0])
 		}
+		if args[0] == "pause" {
+			live, err := claude.Resolve(c.ClaudeRoot, args[1])
+			if err != nil {
+				return err
+			}
+			pgid, err := syscall.Getpgid(live.PID)
+			if err != nil {
+				return err
+			}
+			own, err := syscall.Getpgid(0)
+			if err != nil {
+				return err
+			}
+			if pgid == own {
+				return fmt.Errorf("refusing to pause own process group %d", pgid)
+			}
+		}
 		if msg, err := ctl.Client(c.Home, args[0], args[1:]...); err == nil {
 			fmt.Fprintln(out, strings.TrimSpace(msg))
 			return nil
@@ -178,7 +195,7 @@ func doctor(out io.Writer, c config.Config) error {
 	if len(metas) == 0 {
 		warnings = append(warnings, "undocumented agent meta.json files missing; parent attribution may be unknown")
 	}
-	warnings = append(warnings, "sessions/*.json and agent meta.json fields are undocumented; verify schema with your installed CLI", "live dispatch timing, tmux chord handling, and long SIGSTOP recovery require a live session smoke test")
+	warnings = append(warnings, "tmux resumes stopped pane processes automatically; pause may not hold; use stop_background or kill", "sessions/*.json and agent meta.json fields are undocumented; verify schema with your installed CLI", "live dispatch timing, tmux chord handling, and long SIGSTOP recovery require a live session smoke test")
 	for _, key := range []string{"CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH", "CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS", "CLAUDE_CODE_MAX_SUBAGENTS_PER_SESSION"} {
 		fmt.Fprintf(out, "%s=%s\n", key, os.Getenv(key))
 	}

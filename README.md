@@ -99,3 +99,7 @@ Add `"pause"` after `"stop_background"` to enable automatic process-group suspen
 Markdown exports use GitHub tables for key facts, depth counts, top-five branches, and actions. Branches rank by tokens, then direct children. Repeated verification windows share one entry per step; each action records spawns observed while it was the latest step.
 
 Post-mortems include ten-second spawn buckets, depth counts, the five loudest branches, action timestamps, spawns after trip, and a five-minute rate projection. Token prices are illustrative API-equivalent estimates, not subscription billing. `purge` removes the private state directory, including incidents and fuses; uninstall the hook separately if retiring the installation.
+
+## Deploy
+
+The site is static in `/site`. Deploy it on Vercel with the root directory set to `site`.

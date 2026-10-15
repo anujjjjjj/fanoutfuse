@@ -35,3 +35,23 @@ func TestAttributionDedupAndLateParents(t *testing.T) {
 		t.Fatal(tr.Metrics(at))
 	}
 }
+
+func TestSpawnDepthIsAuthoritative(t *testing.T) {
+	tr := New()
+	depth := 2
+	tr.Apply(model.Event{Kind: "spawn", Agent: "child", Parent: "missing", SpawnDepth: &depth})
+	tr.Apply(model.Event{Kind: "spawn", Agent: "leaf", Parent: "child"})
+	tr.Apply(model.Event{Kind: "attribute", Agent: "missing", Parent: "ancestor"})
+	tr.Apply(model.Event{Kind: "attribute", Agent: "main", Type: "worker"})
+	if tr.Nodes["child"].Depth != 2 || tr.Nodes["leaf"].Depth != 3 {
+		t.Fatalf("explicit depth not preserved: %+v", tr.Snapshot())
+	}
+	zero := 0
+	tr.Apply(model.Event{Kind: "attribute", Agent: "child", SpawnDepth: &zero})
+	if tr.Nodes["child"].Depth != 0 || tr.Nodes["leaf"].Depth != 1 {
+		t.Fatal("explicit zero depth ignored")
+	}
+	if tr.Nodes["main"].Type != "main" || tr.Nodes["main"].Depth != 0 {
+		t.Fatal("main attribution overwritten")
+	}
+}

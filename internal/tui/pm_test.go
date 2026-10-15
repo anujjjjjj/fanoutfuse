@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/anujjjjjj/fanoutfuse/internal/model"
 )
@@ -37,6 +38,30 @@ func TestMarkdownTablesAndRanking(t *testing.T) {
 		}
 		if !strings.Contains(strings.Split(out.String(), "\n")[0], " · -") {
 			t.Fatal("missing project placeholder", out.String())
+		}
+	}
+}
+
+func TestLocalTimestamps(t *testing.T) {
+	old := time.Local
+	time.Local = time.FixedZone("IST", 19800)
+	defer func() { time.Local = old }()
+	at := time.Date(2026, 10, 15, 12, 47, 17, 0, time.UTC)
+	in := &model.Incident{Tripped: at, Contained: at, Started: at, Value: 2, Threshold: 2, Actions: []model.Action{{At: at, OK: true}}}
+	for _, md := range []bool{false, true} {
+		var out bytes.Buffer
+		if err := Render(&out, in, md); err != nil {
+			t.Fatal(err)
+		}
+		if strings.Count(out.String(), "2026-10-15 18:17:17 IST") != 3 {
+			t.Fatal(out.String())
+		}
+		comparison := "2 >= 2"
+		if md {
+			comparison = "2 &gt;= 2"
+		}
+		if !strings.Contains(out.String(), comparison) {
+			t.Fatal(out.String())
 		}
 	}
 }

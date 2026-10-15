@@ -217,11 +217,12 @@ func (d *Detector) Control(ctx context.Context, method string, args []string) (s
 		if err != nil {
 			return "", err
 		}
-		sig := syscall.SIGSTOP
-		if method == "resume" {
-			sig = syscall.SIGCONT
+		if method == "pause" {
+			err = actuator.PauseGroup(ctx, live.PID)
+		} else {
+			err = actuator.SignalGroup(live.PID, syscall.SIGCONT)
 		}
-		if err = actuator.SignalGroup(live.PID, sig); err != nil {
+		if err != nil {
 			return "", err
 		}
 		s := d.State(live.ID)

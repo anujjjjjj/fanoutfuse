@@ -17,7 +17,7 @@ type Tree struct {
 }
 
 func New() *Tree {
-	return &Tree{Nodes: map[string]*model.Node{"main": {ID: "main", Depth: 0, Status: "unknown"}}, Seen: map[string]bool{}}
+	return &Tree{Nodes: map[string]*model.Node{"main": {ID: "main", Type: "main", Depth: 0, Status: "unknown"}}, Seen: map[string]bool{}}
 }
 func (t *Tree) Apply(e model.Event) bool {
 	if e.Agent == "" {
@@ -57,7 +57,13 @@ func (t *Tree) Apply(e model.Event) bool {
 	if e.Parent != "" {
 		n.Parent = e.Parent
 	}
-	if e.Type != "" {
+	if e.SpawnDepth != nil {
+		d := *e.SpawnDepth
+		n.SpawnDepth = &d
+	}
+	if e.Agent == "main" {
+		n.Type = "main"
+	} else if e.Type != "" {
 		n.Type = e.Type
 	}
 	if e.Model != "" {
@@ -74,6 +80,9 @@ func (t *Tree) depths() {
 			return 0
 		}
 		n := t.Nodes[id]
+		if n != nil && n.SpawnDepth != nil {
+			return *n.SpawnDepth
+		}
 		if n == nil || n.Parent == "" || seen[id] {
 			return 1
 		}

@@ -3,8 +3,10 @@ package actuator
 import (
 	"context"
 	"fmt"
+	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"syscall"
@@ -30,6 +32,44 @@ func SignalGroup(pid int, sig syscall.Signal) error {
 	}
 	return syscall.Kill(-pgid, sig)
 }
+
+// PauseGroup verifies that the stop survives automatic pane process resumes.
+func PauseGroup(ctx context.Context, pid int) error {
+	if err := SignalGroup(pid, syscall.SIGSTOP); err != nil {
+		return err
+	}
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-time.After(300 * time.Millisecond):
+	}
+	stopped, err := processStopped(ctx, pid)
+	if err != nil {
+		return fmt.Errorf("verify pause: %w", err)
+	}
+	if !stopped {
+		return fmt.Errorf("pause did not hold: process was auto-continued (tmux resumes stopped pane processes); use stop_background or kill")
+	}
+	return nil
+}
+
+func processStopped(ctx context.Context, pid int) (bool, error) {
+	if runtime.GOOS == "linux" {
+		b, err := os.ReadFile(fmt.Sprintf("/proc/%d/stat", pid))
+		if err != nil {
+			return false, err
+		}
+		// The command name may contain spaces and parentheses.
+		end := strings.LastIndexByte(string(b), ')')
+		if end < 0 || end+2 >= len(b) {
+			return false, fmt.Errorf("invalid process stat")
+		}
+		return b[end+2] == 'T', nil
+	}
+	b, err := exec.CommandContext(ctx, "ps", "-p", strconv.Itoa(pid), "-o", "stat=").Output()
+	return strings.HasPrefix(strings.TrimSpace(string(b)), "T"), err
+}
+
 func command(ctx context.Context, name string, args ...string) error {
 	out, err := exec.CommandContext(ctx, name, args...).CombinedOutput()
 	if err != nil {

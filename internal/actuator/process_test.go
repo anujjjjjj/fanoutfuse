@@ -11,6 +11,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/anujjjjjj/fanoutfuse/internal/config"
 	"github.com/anujjjjjj/fanoutfuse/internal/model"
 )
 
@@ -66,5 +67,56 @@ func TestSignalGroupStopsAndResumes(t *testing.T) {
 	}
 	if err := SignalGroup(os.Getpid(), syscall.SIGSTOP); err == nil {
 		t.Fatal("own group accepted")
+	}
+}
+
+func TestPauseGroupHolds(t *testing.T) {
+	cmd := exec.Command("sleep", "60")
+	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
+	if err := cmd.Start(); err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = SignalGroup(cmd.Process.Pid, syscall.SIGKILL); _ = cmd.Wait() }()
+	if err := PauseGroup(context.Background(), cmd.Process.Pid); err != nil {
+		t.Fatal(err)
+	}
+	stopped, err := processStopped(context.Background(), cmd.Process.Pid)
+	if err != nil || !stopped {
+		t.Fatalf("stopped=%t: %v", stopped, err)
+	}
+}
+
+func TestPauseAutoContinueAdvancesLadder(t *testing.T) {
+	cmd := exec.Command("sleep", "60")
+	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
+	if err := cmd.Start(); err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = SignalGroup(cmd.Process.Pid, syscall.SIGKILL); _ = cmd.Wait() }()
+	done := make(chan struct{})
+	exited := make(chan struct{})
+	go func() {
+		defer close(exited)
+		ticker := time.NewTicker(5 * time.Millisecond)
+		defer ticker.Stop()
+		for {
+			select {
+			case <-done:
+				return
+			case <-ticker.C:
+				_ = SignalGroup(cmd.Process.Pid, syscall.SIGCONT)
+			}
+		}
+	}()
+	defer func() { close(done); <-exited }()
+	c := config.Default()
+	c.Home = t.TempDir()
+	c.General.Ladder = []string{"pause", "contain"}
+	at := time.Now()
+	in := &model.Incident{After: 1}
+	l := &Ladder{Config: c, Session: model.Session{ID: "test", PID: cmd.Process.Pid}, Incident: in, Waiting: true, Deadline: at}
+	l.Advance(context.Background(), at)
+	if len(in.Actions) != 3 || in.Actions[1].Step != "pause" || in.Actions[1].OK || !strings.Contains(in.Actions[1].Error, "pause did not hold: process was auto-continued (tmux resumes stopped pane processes); use stop_background or kill") || in.Actions[2].Step != "contain" || !in.Actions[2].OK {
+		t.Fatalf("unexpected actions: %+v", in.Actions)
 	}
 }

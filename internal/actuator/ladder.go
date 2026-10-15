@@ -2,14 +2,13 @@ package actuator
 
 import (
 	"context"
-	"syscall"
 	"time"
 
 	"github.com/anujjjjjj/fanoutfuse/internal/config"
 	"github.com/anujjjjjj/fanoutfuse/internal/model"
 )
 
-// Ladder is advanced by live or virtual timestamps. It never sleeps during verification.
+// Ladder is advanced by live or virtual timestamps. Live pause checks wait for process state.
 type Ladder struct {
 	Config      config.Config
 	Session     model.Session
@@ -29,7 +28,7 @@ func (l *Ladder) record(step string, at time.Time, err error) {
 	}
 	l.Incident.Actions = append(l.Incident.Actions, a)
 }
-func (l *Ladder) execute(ctx context.Context, step string, at time.Time) {
+func (l *Ladder) execute(ctx context.Context, step string, at time.Time) error {
 	var err error
 	switch step {
 	case "contain":
@@ -40,7 +39,7 @@ func (l *Ladder) execute(ctx context.Context, step string, at time.Time) {
 		}
 	case "pause":
 		if !l.Simulated {
-			err = SignalGroup(l.Session.PID, syscall.SIGSTOP)
+			err = PauseGroup(ctx, l.Session.PID)
 		}
 	case "kill":
 		if !l.Simulated {
@@ -48,6 +47,7 @@ func (l *Ladder) execute(ctx context.Context, step string, at time.Time) {
 		}
 	}
 	l.record(step, at, err)
+	return err
 }
 func (l *Ladder) Start(ctx context.Context, at time.Time) {
 	// Containment and the graceful stop are immediate. The process-group steps require verification first.
@@ -101,9 +101,13 @@ func (l *Ladder) Advance(ctx context.Context, at time.Time) {
 		return
 	}
 	l.WindowStart = len(l.Incident.Actions)
-	s := l.Config.General.Ladder[l.Next]
-	l.Next++
-	l.execute(ctx, s, l.Deadline)
+	for l.Next < len(l.Config.General.Ladder) {
+		s := l.Config.General.Ladder[l.Next]
+		l.Next++
+		if err := l.execute(ctx, s, l.Deadline); err == nil || s != "pause" {
+			break
+		}
+	}
 	l.Baseline = l.Incident.After
 	l.Deadline = l.Deadline.Add(l.Config.EscalateAfter())
 }

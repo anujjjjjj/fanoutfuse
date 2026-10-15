@@ -54,10 +54,10 @@ func Render(w io.Writer, in *model.Incident, md bool) error {
 		project = "-"
 	}
 	fmt.Fprintf(&b, "FanoutFuse · incident %s · %s %s · %s · session %s\n", in.ID, in.Platform, in.Version, project, in.Session)
-	fmt.Fprintf(&b, "TRIPPED %s %g > %g at %s · time-to-trip %s\n", in.Rule, in.Value, in.Threshold, in.Tripped.Format(time.RFC3339), in.Tripped.Sub(in.Started).Round(time.Millisecond))
+	fmt.Fprintf(&b, "TRIPPED %s %g >= %g at %s · time-to-trip %s\n", in.Rule, in.Value, in.Threshold, in.Tripped.Local().Format("2006-01-02 15:04:05 MST"), in.Tripped.Sub(in.Started).Round(time.Millisecond))
 	contained := "unverified"
 	if !in.Contained.IsZero() {
-		contained = in.Contained.Format(time.RFC3339)
+		contained = in.Contained.Local().Format("2006-01-02 15:04:05 MST")
 	}
 	fmt.Fprintf(&b, "Spawns %s · total %d (after trip: %d) · depth max %d\n", Sparkline(in.Buckets), in.Total, in.After, in.MaxDepth)
 	fmt.Fprintf(&b, "Tokens %d in / %d out / %d cache · ~$%.4f API-equivalent (estimate, price table v1)\n", in.TokensIn, in.TokensOut, in.TokensCache, in.Cost)
@@ -104,7 +104,7 @@ func Render(w io.Writer, in *model.Incident, md bool) error {
 		if !a.OK {
 			status = a.Error
 		}
-		fmt.Fprintf(&b, " %s %s: %s · spawns_after_trip=%d\n", a.At.Format("15:04:05.000"), a.Step, status, a.SpawnsAfterTrip)
+		fmt.Fprintf(&b, " %s %s: %s · spawns_after_trip=%d\n", a.At.Local().Format("2006-01-02 15:04:05 MST"), a.Step, status, a.SpawnsAfterTrip)
 	}
 	_, err := io.WriteString(w, b.String())
 	return err
@@ -128,11 +128,11 @@ func renderMarkdown(w io.Writer, in *model.Incident) error {
 	fact("Project", project)
 	fact("Session", in.Session)
 	fact("TRIPPED", fmt.Sprintf("%s %g >= %g", in.Rule, in.Value, in.Threshold))
-	fact("Tripped at", in.Tripped.Format(time.RFC3339))
+	fact("Tripped at", in.Tripped.Local().Format("2006-01-02 15:04:05 MST"))
 	fact("Time-to-trip", in.Tripped.Sub(in.Started).Round(time.Millisecond))
 	contained := "unverified"
 	if !in.Contained.IsZero() {
-		contained = in.Contained.Format(time.RFC3339)
+		contained = in.Contained.Local().Format("2006-01-02 15:04:05 MST")
 	}
 	fact("Contained", contained)
 	fact("Spawns", fmt.Sprintf("%s · total %d · after trip %d", Sparkline(in.Buckets), in.Total, in.After))
@@ -177,7 +177,7 @@ func renderMarkdown(w io.Writer, in *model.Incident) error {
 		if !a.OK {
 			status = a.Error
 		}
-		fmt.Fprintf(&b, "| %s | %s | %s | %d |\n", cell(a.Step), a.At.Format(time.RFC3339Nano), cell(status), a.SpawnsAfterTrip)
+		fmt.Fprintf(&b, "| %s | %s | %s | %d |\n", cell(a.Step), a.At.Local().Format("2006-01-02 15:04:05 MST"), cell(status), a.SpawnsAfterTrip)
 	}
 	_, err := io.WriteString(w, b.String())
 	return err
