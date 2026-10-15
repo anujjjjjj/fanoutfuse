@@ -5,302 +5,602 @@
     {
       "at": 0,
       "parent": "main",
-      "duration": 1
+      "duration": 1,
+      "id": "a0001",
+      "subagent_type": "general-purpose",
+      "tokens": 1200,
+      "tokens_out": 300,
+      "tokens_cache": 600
     },
     {
       "at": 7,
       "parent": "main",
-      "duration": 1
+      "duration": 1,
+      "id": "a0002",
+      "subagent_type": "Explore",
+      "tokens": 1630,
+      "tokens_out": 410,
+      "tokens_cache": 750
     },
     {
       "at": 14,
       "parent": "main",
-      "duration": 1
+      "duration": 1,
+      "id": "a0003",
+      "subagent_type": "Plan",
+      "tokens": 2060,
+      "tokens_out": 520,
+      "tokens_cache": 900
     },
     {
       "at": 21,
       "parent": "main",
-      "duration": 1
+      "duration": 1,
+      "id": "a0004",
+      "subagent_type": "general-purpose",
+      "tokens": 2490,
+      "tokens_out": 630,
+      "tokens_cache": 1050
     },
     {
       "at": 28,
       "parent": "main",
-      "duration": 1
+      "duration": 1,
+      "id": "a0005",
+      "subagent_type": "Explore",
+      "tokens": 2920,
+      "tokens_out": 740,
+      "tokens_cache": 1200
     },
     {
       "at": 35,
       "parent": "main",
-      "duration": 1
+      "duration": 1,
+      "id": "a0006",
+      "subagent_type": "Plan",
+      "tokens": 3350,
+      "tokens_out": 850,
+      "tokens_cache": 600
     },
     {
       "at": 42,
       "parent": "main",
-      "duration": 1
+      "duration": 1,
+      "id": "a0007",
+      "subagent_type": "general-purpose",
+      "tokens": 3780,
+      "tokens_out": 960,
+      "tokens_cache": 750
     },
     {
       "at": 49,
       "parent": "main",
-      "duration": 1
+      "duration": 1,
+      "id": "a0008",
+      "subagent_type": "Explore",
+      "tokens": 4210,
+      "tokens_out": 300,
+      "tokens_cache": 900
     },
     {
       "at": 56,
       "parent": "main",
-      "duration": 1
+      "duration": 1,
+      "id": "a0009",
+      "subagent_type": "Plan",
+      "tokens": 4640,
+      "tokens_out": 410,
+      "tokens_cache": 1050
     },
     {
       "at": 63,
       "parent": "main",
-      "duration": 1
+      "duration": 1,
+      "id": "a0010",
+      "subagent_type": "general-purpose",
+      "tokens": 5070,
+      "tokens_out": 520,
+      "tokens_cache": 1200
     },
     {
       "at": 70,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0001",
+      "duration": 1,
+      "id": "a0011",
+      "subagent_type": "Explore",
+      "tokens": 5500,
+      "tokens_out": 630,
+      "tokens_cache": 600
     },
     {
       "at": 77,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0011",
+      "duration": 1,
+      "id": "a0012",
+      "subagent_type": "Plan",
+      "tokens": 1200,
+      "tokens_out": 740,
+      "tokens_cache": 750
     },
     {
       "at": 84,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0012",
+      "duration": 1,
+      "id": "a0013",
+      "subagent_type": "general-purpose",
+      "tokens": 1630,
+      "tokens_out": 850,
+      "tokens_cache": 900
     },
     {
       "at": 91,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0013",
+      "duration": 1,
+      "id": "a0014",
+      "subagent_type": "Explore",
+      "tokens": 2060,
+      "tokens_out": 960,
+      "tokens_cache": 1050
     },
     {
       "at": 98,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0001",
+      "duration": 1,
+      "id": "a0015",
+      "subagent_type": "Plan",
+      "tokens": 2490,
+      "tokens_out": 300,
+      "tokens_cache": 1200
     },
     {
       "at": 105,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0015",
+      "duration": 1,
+      "id": "a0016",
+      "subagent_type": "general-purpose",
+      "tokens": 2920,
+      "tokens_out": 410,
+      "tokens_cache": 600
     },
     {
       "at": 112,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0016",
+      "duration": 1,
+      "id": "a0017",
+      "subagent_type": "Explore",
+      "tokens": 3350,
+      "tokens_out": 520,
+      "tokens_cache": 750
     },
     {
       "at": 119,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0017",
+      "duration": 1,
+      "id": "a0018",
+      "subagent_type": "Plan",
+      "tokens": 3780,
+      "tokens_out": 630,
+      "tokens_cache": 900
     },
     {
       "at": 126,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0001",
+      "duration": 1,
+      "id": "a0019",
+      "subagent_type": "general-purpose",
+      "tokens": 4210,
+      "tokens_out": 740,
+      "tokens_cache": 1050
     },
     {
       "at": 133,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0019",
+      "duration": 1,
+      "id": "a0020",
+      "subagent_type": "Explore",
+      "tokens": 4640,
+      "tokens_out": 850,
+      "tokens_cache": 1200
     },
     {
       "at": 140,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0020",
+      "duration": 1,
+      "id": "a0021",
+      "subagent_type": "Plan",
+      "tokens": 5070,
+      "tokens_out": 960,
+      "tokens_cache": 600
     },
     {
       "at": 147,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0021",
+      "duration": 1,
+      "id": "a0022",
+      "subagent_type": "general-purpose",
+      "tokens": 5500,
+      "tokens_out": 300,
+      "tokens_cache": 750
     },
     {
       "at": 154,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0001",
+      "duration": 1,
+      "id": "a0023",
+      "subagent_type": "Explore",
+      "tokens": 1200,
+      "tokens_out": 410,
+      "tokens_cache": 900
     },
     {
       "at": 161,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0023",
+      "duration": 1,
+      "id": "a0024",
+      "subagent_type": "Plan",
+      "tokens": 1630,
+      "tokens_out": 520,
+      "tokens_cache": 1050
     },
     {
       "at": 168,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0024",
+      "duration": 1,
+      "id": "a0025",
+      "subagent_type": "general-purpose",
+      "tokens": 2060,
+      "tokens_out": 630,
+      "tokens_cache": 1200
     },
     {
       "at": 175,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0025",
+      "duration": 1,
+      "id": "a0026",
+      "subagent_type": "Explore",
+      "tokens": 2490,
+      "tokens_out": 740,
+      "tokens_cache": 600
     },
     {
       "at": 182,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0001",
+      "duration": 1,
+      "id": "a0027",
+      "subagent_type": "Plan",
+      "tokens": 2920,
+      "tokens_out": 850,
+      "tokens_cache": 750
     },
     {
       "at": 189,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0027",
+      "duration": 1,
+      "id": "a0028",
+      "subagent_type": "general-purpose",
+      "tokens": 3350,
+      "tokens_out": 960,
+      "tokens_cache": 900
     },
     {
       "at": 196,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0028",
+      "duration": 1,
+      "id": "a0029",
+      "subagent_type": "Explore",
+      "tokens": 3780,
+      "tokens_out": 300,
+      "tokens_cache": 1050
     },
     {
       "at": 203,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0029",
+      "duration": 1,
+      "id": "a0030",
+      "subagent_type": "Plan",
+      "tokens": 4210,
+      "tokens_out": 410,
+      "tokens_cache": 1200
     },
     {
       "at": 210,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0001",
+      "duration": 1,
+      "id": "a0031",
+      "subagent_type": "general-purpose",
+      "tokens": 4640,
+      "tokens_out": 520,
+      "tokens_cache": 600
     },
     {
       "at": 217,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0031",
+      "duration": 1,
+      "id": "a0032",
+      "subagent_type": "Explore",
+      "tokens": 5070,
+      "tokens_out": 630,
+      "tokens_cache": 750
     },
     {
       "at": 224,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0032",
+      "duration": 1,
+      "id": "a0033",
+      "subagent_type": "Plan",
+      "tokens": 5500,
+      "tokens_out": 740,
+      "tokens_cache": 900
     },
     {
       "at": 231,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0033",
+      "duration": 1,
+      "id": "a0034",
+      "subagent_type": "general-purpose",
+      "tokens": 1200,
+      "tokens_out": 850,
+      "tokens_cache": 1050
     },
     {
       "at": 238,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0001",
+      "duration": 1,
+      "id": "a0035",
+      "subagent_type": "Explore",
+      "tokens": 1630,
+      "tokens_out": 960,
+      "tokens_cache": 1200
     },
     {
       "at": 245,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0035",
+      "duration": 1,
+      "id": "a0036",
+      "subagent_type": "Plan",
+      "tokens": 2060,
+      "tokens_out": 300,
+      "tokens_cache": 600
     },
     {
       "at": 252,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0036",
+      "duration": 1,
+      "id": "a0037",
+      "subagent_type": "general-purpose",
+      "tokens": 2490,
+      "tokens_out": 410,
+      "tokens_cache": 750
     },
     {
       "at": 259,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0037",
+      "duration": 1,
+      "id": "a0038",
+      "subagent_type": "Explore",
+      "tokens": 2920,
+      "tokens_out": 520,
+      "tokens_cache": 900
     },
     {
       "at": 266,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0001",
+      "duration": 1,
+      "id": "a0039",
+      "subagent_type": "Plan",
+      "tokens": 3350,
+      "tokens_out": 630,
+      "tokens_cache": 1050
     },
     {
       "at": 273,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0039",
+      "duration": 1,
+      "id": "a0040",
+      "subagent_type": "general-purpose",
+      "tokens": 3780,
+      "tokens_out": 740,
+      "tokens_cache": 1200
     },
     {
       "at": 280,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0040",
+      "duration": 1,
+      "id": "a0041",
+      "subagent_type": "Explore",
+      "tokens": 4210,
+      "tokens_out": 850,
+      "tokens_cache": 600
     },
     {
       "at": 287,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0041",
+      "duration": 1,
+      "id": "a0042",
+      "subagent_type": "Plan",
+      "tokens": 4640,
+      "tokens_out": 960,
+      "tokens_cache": 750
     },
     {
       "at": 294,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0001",
+      "duration": 1,
+      "id": "a0043",
+      "subagent_type": "general-purpose",
+      "tokens": 5070,
+      "tokens_out": 300,
+      "tokens_cache": 900
     },
     {
       "at": 301,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0043",
+      "duration": 1,
+      "id": "a0044",
+      "subagent_type": "Explore",
+      "tokens": 5500,
+      "tokens_out": 410,
+      "tokens_cache": 1050
     },
     {
       "at": 308,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0044",
+      "duration": 1,
+      "id": "a0045",
+      "subagent_type": "Plan",
+      "tokens": 1200,
+      "tokens_out": 520,
+      "tokens_cache": 1200
     },
     {
       "at": 315,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0045",
+      "duration": 1,
+      "id": "a0046",
+      "subagent_type": "general-purpose",
+      "tokens": 1630,
+      "tokens_out": 630,
+      "tokens_cache": 600
     },
     {
       "at": 322,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0001",
+      "duration": 1,
+      "id": "a0047",
+      "subagent_type": "Explore",
+      "tokens": 2060,
+      "tokens_out": 740,
+      "tokens_cache": 750
     },
     {
       "at": 329,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0047",
+      "duration": 1,
+      "id": "a0048",
+      "subagent_type": "Plan",
+      "tokens": 2490,
+      "tokens_out": 850,
+      "tokens_cache": 900
     },
     {
       "at": 336,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0048",
+      "duration": 1,
+      "id": "a0049",
+      "subagent_type": "general-purpose",
+      "tokens": 2920,
+      "tokens_out": 960,
+      "tokens_cache": 1050
     },
     {
       "at": 343,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0049",
+      "duration": 1,
+      "id": "a0050",
+      "subagent_type": "Explore",
+      "tokens": 3350,
+      "tokens_out": 300,
+      "tokens_cache": 1200
     },
     {
       "at": 350,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0001",
+      "duration": 1,
+      "id": "a0051",
+      "subagent_type": "Plan",
+      "tokens": 3780,
+      "tokens_out": 410,
+      "tokens_cache": 600
     },
     {
       "at": 357,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0051",
+      "duration": 1,
+      "id": "a0052",
+      "subagent_type": "general-purpose",
+      "tokens": 4210,
+      "tokens_out": 520,
+      "tokens_cache": 750
     },
     {
       "at": 364,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0052",
+      "duration": 1,
+      "id": "a0053",
+      "subagent_type": "Explore",
+      "tokens": 4640,
+      "tokens_out": 630,
+      "tokens_cache": 900
     },
     {
       "at": 371,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0053",
+      "duration": 1,
+      "id": "a0054",
+      "subagent_type": "Plan",
+      "tokens": 5070,
+      "tokens_out": 740,
+      "tokens_cache": 1050
     },
     {
       "at": 378,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0001",
+      "duration": 1,
+      "id": "a0055",
+      "subagent_type": "general-purpose",
+      "tokens": 5500,
+      "tokens_out": 850,
+      "tokens_cache": 1200
     },
     {
       "at": 385,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0055",
+      "duration": 1,
+      "id": "a0056",
+      "subagent_type": "Explore",
+      "tokens": 1200,
+      "tokens_out": 960,
+      "tokens_cache": 600
     },
     {
       "at": 392,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0056",
+      "duration": 1,
+      "id": "a0057",
+      "subagent_type": "Plan",
+      "tokens": 1630,
+      "tokens_out": 300,
+      "tokens_cache": 750
     },
     {
       "at": 399,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0057",
+      "duration": 1,
+      "id": "a0058",
+      "subagent_type": "general-purpose",
+      "tokens": 2060,
+      "tokens_out": 410,
+      "tokens_cache": 900
     },
     {
       "at": 406,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0001",
+      "duration": 1,
+      "id": "a0059",
+      "subagent_type": "Explore",
+      "tokens": 2490,
+      "tokens_out": 520,
+      "tokens_cache": 1050
     },
     {
       "at": 413,
-      "parent": "main",
-      "duration": 1
+      "parent": "a0059",
+      "duration": 1,
+      "id": "a0060",
+      "subagent_type": "Plan",
+      "tokens": 2920,
+      "tokens_out": 630,
+      "tokens_cache": 1200
     }
   ],
   "expected": "breadth_per_parent"

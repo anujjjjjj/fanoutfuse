@@ -79,6 +79,9 @@ func (d *Detector) Apply(ctx context.Context, e model.Event) (*model.Verdict, er
 	spawned := s.Tree.Apply(e)
 	if s.Incident != nil && spawned && !e.At.Before(s.Incident.Tripped) {
 		s.Incident.After++
+		if s.Ladder != nil {
+			s.Ladder.ObserveSpawn()
+		}
 		if s.Ladder != nil && !s.Ladder.Waiting {
 			s.Ladder.Waiting = true
 			s.Ladder.Baseline = s.Incident.After - 1
@@ -159,9 +162,9 @@ func (d *Detector) Tick(ctx context.Context, at time.Time) error {
 			s.LastFlush = at
 		}
 		if s.Ladder != nil {
-			before := len(s.Incident.Actions)
+			due := s.Ladder.Waiting && !at.Before(s.Ladder.Deadline)
 			s.Ladder.Advance(ctx, at)
-			if before != len(s.Incident.Actions) && d.Store != nil {
+			if due && d.Store != nil {
 				d.snapshot(s)
 				if err := d.Store.Save(s.Incident); err != nil {
 					return err

@@ -23,7 +23,7 @@ type Ladder struct {
 }
 
 func (l *Ladder) record(step string, at time.Time, err error) {
-	a := model.Action{Step: step, At: at, OK: err == nil, SpawnsAfterTrip: l.Incident.After}
+	a := model.Action{Step: step, At: at, OK: err == nil, SpawnsAfterTrip: 0}
 	if err != nil {
 		a.Error = err.Error()
 	}
@@ -72,12 +72,23 @@ func (l *Ladder) Advance(ctx context.Context, at time.Time) {
 		return
 	}
 	continued := l.Incident.After > l.Baseline
-	for i := l.WindowStart; i < len(l.Incident.Actions); i++ {
-		if l.Incident.Actions[i].Step != "verify" {
-			l.Incident.Actions[i].SpawnsAfterTrip = l.Incident.After
+	// Verification summarizes the latest step, including later observation windows.
+	actions := l.Incident.Actions
+	count := 0
+	for i := len(actions) - 1; i >= 0; i-- {
+		if actions[i].Step != "verify" {
+			count = actions[i].SpawnsAfterTrip
+			break
 		}
 	}
-	l.record("verify", l.Deadline, nil)
+	if len(actions) > 0 && actions[len(actions)-1].Step == "verify" {
+		a := &l.Incident.Actions[len(actions)-1]
+		a.At = l.Deadline
+		a.SpawnsAfterTrip = count
+	} else {
+		l.record("verify", l.Deadline, nil)
+		l.Incident.Actions[len(l.Incident.Actions)-1].SpawnsAfterTrip = count
+	}
 	if !continued {
 		l.Incident.Contained = l.Deadline
 		l.Waiting = false
@@ -95,4 +106,14 @@ func (l *Ladder) Advance(ctx context.Context, at time.Time) {
 	l.execute(ctx, s, l.Deadline)
 	l.Baseline = l.Incident.After
 	l.Deadline = l.Deadline.Add(l.Config.EscalateAfter())
+}
+
+// ObserveSpawn attributes a spawn to the most recent ladder action.
+func (l *Ladder) ObserveSpawn() {
+	for i := len(l.Incident.Actions) - 1; i >= 0; i-- {
+		if l.Incident.Actions[i].Step != "verify" {
+			l.Incident.Actions[i].SpawnsAfterTrip++
+			return
+		}
+	}
 }

@@ -65,7 +65,7 @@ fanoutfuse pm --md
 | normal-pr-review | No trip, 5 agents | No trip |
 | planned-20 | No trip, 20 over 3 minutes | No trip |
 
-The 69332 fixture retains minute totals of 2, 8, 17, 8, 16, and 188. Its explicit eight-second dispatch window models clustered launches; minute totals alone cannot specify a burst. Missing parent metadata remains unknown rather than being attributed to the root.
+The 69332 fixture retains minute totals of 2, 8, 17, 8, 16, and 188. Its explicit eight-second dispatch window models clustered launches; minute totals alone cannot specify a burst. Fixtures include parent attribution, subagent types, and input/output/cache token usage. The breadth fixture reaches depth five; the other fixtures span depths one through three.
 
 ## Configuration
 
@@ -94,6 +94,8 @@ after_resume = "10m"
 
 Add `"pause"` after `"stop_background"` to enable automatic process-group suspension when spawns continue. Add `"kill"` after pause only if you want automatic `SIGINT`, followed by `SIGTERM` after three seconds and `SIGKILL` after another five seconds. Resuming temporarily doubles limits for the configured cooldown.
 
-`FANOUTFUSE_HOME` defaults to `$HOME/.fanoutfuse`. `CLAUDE_CONFIG_DIR` overrides the transcript/settings root. Limit overrides use `FANOUTFUSE_<RULE>_WARN` and `FANOUTFUSE_<RULE>_TRIP`, for example `FANOUTFUSE_SPAWN_RATE_TRIP=3`. `FANOUTFUSE_ESCALATE_AFTER` and comma-separated `FANOUTFUSE_ACTION_LADDER` override the ladder. A zero threshold disables that rule level.
+`FANOUTFUSE_HOME` defaults to `$HOME/.fanoutfuse`. Limit overrides use `FANOUTFUSE_<RULE>_WARN` and `FANOUTFUSE_<RULE>_TRIP`, for example `FANOUTFUSE_TOTAL_SPAWNS_TRIP=1`. `FANOUTFUSE_ESCALATE_AFTER` and comma-separated `FANOUTFUSE_ACTION_LADDER` override the ladder. A zero threshold disables that rule level.
+
+Markdown exports use GitHub tables for key facts, depth counts, top-five branches, and actions. Branches rank by tokens, then direct children. Repeated verification windows share one entry per step; each action records spawns observed while it was the latest step.
 
 Post-mortems include ten-second spawn buckets, depth counts, the five loudest branches, action timestamps, spawns after trip, and a five-minute rate projection. Token prices are illustrative API-equivalent estimates, not subscription billing. `purge` removes the private state directory, including incidents and fuses; uninstall the hook separately if retiring the installation.

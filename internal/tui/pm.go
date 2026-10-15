@@ -45,11 +45,15 @@ func Sparkline(b map[int64]int) string {
 	return out.String()
 }
 func Render(w io.Writer, in *model.Incident, md bool) error {
-	var b strings.Builder
 	if md {
-		b.WriteString("# FanoutFuse post-mortem\n\n")
+		return renderMarkdown(w, in)
 	}
-	fmt.Fprintf(&b, "FanoutFuse · incident %s · %s %s · %s · session %s\n", in.ID, in.Platform, in.Version, in.Project, in.Session)
+	var b strings.Builder
+	project := in.Project
+	if project == "" {
+		project = "-"
+	}
+	fmt.Fprintf(&b, "FanoutFuse · incident %s · %s %s · %s · session %s\n", in.ID, in.Platform, in.Version, project, in.Session)
 	fmt.Fprintf(&b, "TRIPPED %s %g > %g at %s · time-to-trip %s\n", in.Rule, in.Value, in.Threshold, in.Tripped.Format(time.RFC3339), in.Tripped.Sub(in.Started).Round(time.Millisecond))
 	contained := "unverified"
 	if !in.Contained.IsZero() {
@@ -101,6 +105,79 @@ func Render(w io.Writer, in *model.Incident, md bool) error {
 			status = a.Error
 		}
 		fmt.Fprintf(&b, " %s %s: %s · spawns_after_trip=%d\n", a.At.Format("15:04:05.000"), a.Step, status, a.SpawnsAfterTrip)
+	}
+	_, err := io.WriteString(w, b.String())
+	return err
+}
+
+// cell keeps metadata inside a single GitHub table cell.
+func cell(s string) string {
+	return strings.NewReplacer("|", "&#124;", "\n", " ", "\r", " ", "<", "&lt;", ">", "&gt;", "`", "&#96;", "*", "&#42;").Replace(s)
+}
+func renderMarkdown(w io.Writer, in *model.Incident) error {
+	var b strings.Builder
+	project := in.Project
+	if project == "" {
+		project = "-"
+	}
+	fmt.Fprintf(&b, "# FanoutFuse post-mortem · %s\n\n", cell(project))
+	b.WriteString("| Key facts | Value |\n| --- | --- |\n")
+	fact := func(k string, v any) { fmt.Fprintf(&b, "| %s | %s |\n", k, cell(fmt.Sprint(v))) }
+	fact("Incident", in.ID)
+	fact("Platform", in.Platform+" "+in.Version)
+	fact("Project", project)
+	fact("Session", in.Session)
+	fact("TRIPPED", fmt.Sprintf("%s %g >= %g", in.Rule, in.Value, in.Threshold))
+	fact("Tripped at", in.Tripped.Format(time.RFC3339))
+	fact("Time-to-trip", in.Tripped.Sub(in.Started).Round(time.Millisecond))
+	contained := "unverified"
+	if !in.Contained.IsZero() {
+		contained = in.Contained.Format(time.RFC3339)
+	}
+	fact("Contained", contained)
+	fact("Spawns", fmt.Sprintf("%s · total %d · after trip %d", Sparkline(in.Buckets), in.Total, in.After))
+	fact("Max depth", in.MaxDepth)
+	fact("Tokens", fmt.Sprintf("%d in / %d out / %d cache", in.TokensIn, in.TokensOut, in.TokensCache))
+	fact("Cost", fmt.Sprintf("~$%.4f API-equivalent (estimate, price table v1)", in.Cost))
+	fact("Projected if unstopped (+5m)", fmt.Sprintf("~%d agents (rate extrapolation)", in.Projected))
+	hist := map[int]int{}
+	kids := map[string]int{}
+	for _, n := range in.Nodes {
+		hist[n.Depth]++
+		if n.Parent != "" {
+			kids[n.Parent]++
+		}
+	}
+	b.WriteString("\n## Tree (by depth)\n\n| Depth | Agents |\n| --- | ---: |\n")
+	for i := 0; i <= in.MaxDepth; i++ {
+		fmt.Fprintf(&b, "| %d | %d |\n", i, hist[i])
+	}
+	nodes := append([]model.Node(nil), in.Nodes...)
+	sort.Slice(nodes, func(i, j int) bool {
+		a, c := nodes[i], nodes[j]
+		ta, tc := a.TokensIn+a.TokensOut+a.TokensCache, c.TokensIn+c.TokensOut+c.TokensCache
+		if ta != tc {
+			return ta > tc
+		}
+		if kids[a.ID] != kids[c.ID] {
+			return kids[a.ID] > kids[c.ID]
+		}
+		return a.ID < c.ID
+	})
+	b.WriteString("\n## Top-5 branches\n\n| Agent | Subagent type | Tokens | Kids |\n| --- | --- | ---: | ---: |\n")
+	for i, n := range nodes {
+		if i == 5 {
+			break
+		}
+		fmt.Fprintf(&b, "| %s | %s | %d | %d |\n", cell(n.ID), cell(n.Type), n.TokensIn+n.TokensOut+n.TokensCache, kids[n.ID])
+	}
+	b.WriteString("\n## Actions:\n\n| Step | At | Status | Spawns after trip |\n| --- | --- | --- | ---: |\n")
+	for _, a := range in.Actions {
+		status := "ok"
+		if !a.OK {
+			status = a.Error
+		}
+		fmt.Fprintf(&b, "| %s | %s | %s | %d |\n", cell(a.Step), a.At.Format(time.RFC3339Nano), cell(status), a.SpawnsAfterTrip)
 	}
 	_, err := io.WriteString(w, b.String())
 	return err

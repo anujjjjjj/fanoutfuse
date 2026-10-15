@@ -3,6 +3,7 @@ package config
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -44,5 +45,23 @@ func TestPrecedencePartialLimitsAndRoots(t *testing.T) {
 	t.Setenv("FANOUTFUSE_SPAWN_RATE_TRIP", "NaN")
 	if _, err = Load(project); err == nil {
 		t.Fatal("accepted NaN")
+	}
+}
+
+func TestEveryRuleEnvironmentOverride(t *testing.T) {
+	for _, name := range Names {
+		t.Run(name, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
+			t.Setenv("XDG_CONFIG_HOME", t.TempDir())
+			t.Setenv("FANOUTFUSE_"+strings.ToUpper(name)+"_TRIP", "1")
+			t.Setenv("FANOUTFUSE_"+strings.ToUpper(name)+"_WARN", "0.5")
+			c, err := Load(t.TempDir())
+			if err != nil {
+				t.Fatal(err)
+			}
+			if c.Limits[name].Trip != 1 || c.Limits[name].Warn != 0.5 {
+				t.Fatal(c.Limits[name])
+			}
+		})
 	}
 }

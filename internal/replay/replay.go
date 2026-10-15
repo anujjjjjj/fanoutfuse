@@ -19,11 +19,14 @@ import (
 )
 
 type Agent struct {
-	At       float64 `yaml:"at"`
-	ID       string  `yaml:"id"`
-	Parent   string  `yaml:"parent"`
-	Duration float64 `yaml:"duration"`
-	Tokens   int64   `yaml:"tokens"`
+	At          float64 `yaml:"at"`
+	ID          string  `yaml:"id"`
+	Parent      string  `yaml:"parent"`
+	Duration    float64 `yaml:"duration"`
+	Tokens      int64   `yaml:"tokens"`
+	Type        string  `yaml:"subagent_type"`
+	TokensOut   int64   `yaml:"tokens_out"`
+	TokensCache int64   `yaml:"tokens_cache"`
 }
 type Fixture struct {
 	Session   string    `yaml:"session"`
@@ -64,6 +67,9 @@ func (f Fixture) Events() []model.Event {
 		window = 59
 	}
 	for minute, n := range f.PerMinute {
+		if len(f.Agents) > 0 {
+			break
+		}
 		for j := 0; j < n; j++ {
 			index++
 			agents = append(agents, Agent{ID: fmt.Sprintf("a%04d", index), At: float64(minute*60) + float64(j)*window/float64(n), Duration: 1})
@@ -75,12 +81,12 @@ func (f Fixture) Events() []model.Event {
 			a.ID = fmt.Sprintf("a%04d", i+1)
 		}
 		at := f.Start.Add(time.Duration(a.At * float64(time.Second)))
-		events = append(events, model.Event{Kind: "spawn", Session: f.Session, Agent: a.ID, Parent: a.Parent, At: at})
+		events = append(events, model.Event{Kind: "spawn", Session: f.Session, Agent: a.ID, Parent: a.Parent, Type: a.Type, At: at})
 		if a.Duration > 0 {
 			events = append(events, model.Event{Kind: "end", Session: f.Session, Agent: a.ID, At: at.Add(time.Duration(a.Duration * float64(time.Second)))})
 		}
-		if a.Tokens > 0 {
-			events = append(events, model.Event{Kind: "usage", Session: f.Session, Agent: a.ID, At: at, TokensIn: a.Tokens})
+		if a.Tokens > 0 || a.TokensOut > 0 || a.TokensCache > 0 {
+			events = append(events, model.Event{Kind: "usage", Session: f.Session, Agent: a.ID, At: at, TokensIn: a.Tokens, TokensOut: a.TokensOut, TokensCache: a.TokensCache})
 		}
 	}
 	sort.SliceStable(events, func(i, j int) bool { return events[i].At.Before(events[j].At) })
@@ -99,7 +105,7 @@ func Run(ctx context.Context, path string, c config.Config, s *store.Store, out 
 		if agent.ID != "" && !actuator.ValidID(agent.ID) {
 			return r, fmt.Errorf("invalid fixture agent id")
 		}
-		if agent.At < 0 || agent.Duration < 0 || agent.Tokens < 0 {
+		if agent.At < 0 || agent.Duration < 0 || agent.Tokens < 0 || agent.TokensOut < 0 || agent.TokensCache < 0 {
 			return r, fmt.Errorf("fixture timestamps, durations, and tokens must be nonnegative")
 		}
 	}
@@ -156,9 +162,12 @@ func Run(ctx context.Context, path string, c config.Config, s *store.Store, out 
 	if r.Trip == nil {
 		fmt.Fprintln(out, "NO TRIP")
 	}
-	fmt.Fprintln(out, "count-cap@50 would trip at agent 50")
-	if r.Count < 50 {
-		fmt.Fprintf(out, "count cap not reached (%d agents)\n", r.Count)
+	if r.Trip != nil {
+		fmt.Fprintf(out, "tripped at agent %d; count-cap@50 would trip at agent 50 (%d earlier)\n", r.Index, 50-r.Index)
+	} else if r.Count < 50 {
+		fmt.Fprintf(out, "count-cap@50: never reached (%d agents)\n", r.Count)
+	} else {
+		fmt.Fprintln(out, "count-cap@50 would trip at agent 50")
 	}
 	if state := d.Sessions[f.Session]; state != nil {
 		r.Incident = state.Incident
