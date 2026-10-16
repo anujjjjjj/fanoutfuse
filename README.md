@@ -4,6 +4,16 @@ FanoutFuse is a local circuit breaker for runaway subagent sessions. It watches 
 
 It runs on Linux and macOS as one pure-Go binary. There is no telemetry or network service. Project transcripts stay read-only. Prompts and response text are never stored.
 
+![Replay of fixture 69332 followed by a guard deny](docs/media/replay-69332.gif)
+
+## Install
+
+```sh
+brew install anujjjjjj/tap/fanoutfuse
+```
+
+Or download a binary from the [v0.1.0 release](https://github.com/anujjjjjj/fanoutfuse/releases/tag/v0.1.0).
+
 ## Build and start
 
 Requires Go 1.24 and, for graceful background stopping, tmux.
@@ -102,4 +112,4 @@ Post-mortems include ten-second spawn buckets, depth counts, the five loudest br
 
 ## Deploy
 
-The site is static in `/site`. Deploy it on Vercel with the root directory set to `site`.
+The site is static in `/site`. Deploy it on Vercel with the root directory set to `site` (`cd site && vercel --prod`). Vercel is the canonical host; GitHub Pages is not used.
