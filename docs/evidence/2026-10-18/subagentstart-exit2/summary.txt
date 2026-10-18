@@ -1,0 +1,5 @@
+SubagentStart hook fired: 3 times, exiting 2 each time
+Agent subagent still answered PONG-7731: yes
+Workflow agent a still answered ALPHA-1: yes
+Workflow agent b still answered BETA-2:  yes
+subagent_stats (agent run): "subagent_stats":{"spawned":1,"requested":{"background":0,"foreground":1,"unset":0}

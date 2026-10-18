@@ -1,0 +1,12 @@
+== ultracode
+workflow tool calls:      1
+plugin toasts:            1
+task stopped events:      1
+incident:                 /workspace/fanoutfuse/repo/docs/evidence/2026-10-18/ultracode/fanoutfuse-home/incidents/plugin-6e2a73df-9e5c-4592-a591-7766c689b35f-2026-10-18T01-43-48-995Z.json
+  "reason": "FanoutFuse tripped total_spawns: 2 >= 2"
+  "stopVerified": true,
+  "abortedTurn": null
+  counts (started vs refused per spawn path):
+    "spawned": "agent":0 "workflow":1 "fork":0 "denied": "agent":0 "workflow":2 "fork":0 "tool":0
+  stops:
+    "id":"w2vl2k24m" "attempt":1 "ok":true

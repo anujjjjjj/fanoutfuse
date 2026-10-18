@@ -1,0 +1,47 @@
+{
+  "session": "cd2ab4b0-bb4e-47cf-b530-ee1e98952a9d",
+  "trip": {
+    "rule": "total_spawns",
+    "level": "trip",
+    "value": 2,
+    "threshold": 2,
+    "at": 1792287772158,
+    "reason": "FanoutFuse tripped total_spawns: 2 >= 2"
+  },
+  "counts": {
+    "spawned": {
+      "agent": 1,
+      "workflow": 0,
+      "fork": 0
+    },
+    "denied": {
+      "agent": 2,
+      "workflow": 0,
+      "fork": 0,
+      "tool": 0
+    }
+  },
+  "metrics": {
+    "spawn_rate": 1,
+    "spawn_burst": 1,
+    "total_spawns": 1,
+    "max_depth": 1,
+    "running_concurrent": 1,
+    "tokens_per_min": 0,
+    "growth_factor": 0,
+    "growth_n": 1,
+    "breadth_per_parent": 1,
+    "quota_burn": 0,
+    "quota_used": 0
+  },
+  "stops": [
+    {
+      "id": "afb5dd35691d0e2fa",
+      "attempt": 1,
+      "ok": true,
+      "detail": "{\"message\":\"Successfully stopped task: afb5dd35691d0e2fa (Sleep task 1)\",\"task_id\":\"afb5dd35691d0e2fa\",\"task_type\":\"local_agent\",\"command\":\"Sleep task 1\"}"
+    }
+  ],
+  "stopVerified": true,
+  "abortedTurn": null
+}

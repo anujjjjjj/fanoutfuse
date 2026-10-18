@@ -1,0 +1,1 @@
+ultracode: In this directory, write three small independent files in parallel: a.txt containing a haiku about rivers, b.txt containing a haiku about mountains, c.txt containing a haiku about cities. Use a workflow with one agent per file. Then list which files exist.

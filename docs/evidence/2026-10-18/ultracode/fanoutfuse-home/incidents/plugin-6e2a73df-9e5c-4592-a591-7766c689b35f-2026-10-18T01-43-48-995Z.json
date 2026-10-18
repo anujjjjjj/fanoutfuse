@@ -1,0 +1,47 @@
+{
+  "session": "6e2a73df-9e5c-4592-a591-7766c689b35f",
+  "trip": {
+    "rule": "total_spawns",
+    "level": "trip",
+    "value": 2,
+    "threshold": 2,
+    "at": 1792287828995,
+    "reason": "FanoutFuse tripped total_spawns: 2 >= 2"
+  },
+  "counts": {
+    "spawned": {
+      "agent": 0,
+      "workflow": 1,
+      "fork": 0
+    },
+    "denied": {
+      "agent": 0,
+      "workflow": 2,
+      "fork": 0,
+      "tool": 0
+    }
+  },
+  "metrics": {
+    "spawn_rate": 1,
+    "spawn_burst": 1,
+    "total_spawns": 1,
+    "max_depth": 0,
+    "running_concurrent": 1,
+    "tokens_per_min": 0,
+    "growth_factor": 0,
+    "growth_n": 1,
+    "breadth_per_parent": 0,
+    "quota_burn": 0,
+    "quota_used": 29
+  },
+  "stops": [
+    {
+      "id": "w2vl2k24m",
+      "attempt": 1,
+      "ok": true,
+      "detail": "{\"message\":\"Successfully stopped task: w2vl2k24m (Write three haiku files (rivers, mountains, cities) in parallel, one agent per file)\",\"task_id\":\"w2vl2k24m\",\"task_type\":\"local_workflow\",\"command\":\"Write three haiku files (rivers, mountains, cities) in parallel, one agent per file\"}"
+    }
+  ],
+  "stopVerified": true,
+  "abortedTurn": null
+}
