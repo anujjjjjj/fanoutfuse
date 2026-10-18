@@ -1,0 +1,12 @@
+{
+  "name": "fanoutfuse",
+  "description": "FanoutFuse: a fuse for runaway subagent fan-out in Claude Code",
+  "owner": { "name": "Anuj Kabra" },
+  "plugins": [
+    {
+      "name": "fanoutfuse",
+      "source": "./plugin",
+      "description": "Refuses runaway Agent, Workflow and ultracode subagent spawns and stops agents already running."
+    }
+  ]
+}

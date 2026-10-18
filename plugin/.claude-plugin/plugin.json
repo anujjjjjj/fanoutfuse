@@ -1,0 +1,23 @@
+{
+  "name": "fanoutfuse",
+  "version": "0.2.0",
+  "description": "Stops runaway subagent fan-out in Claude Code: refuses new Agent, Workflow and ultracode spawns past a limit or a 5-hour quota burn rate, and stops agents already running.",
+  "author": { "name": "Anuj Kabra" },
+  "homepage": "https://github.com/anujjjjjj/fanoutfuse",
+  "repository": "https://github.com/anujjjjjj/fanoutfuse",
+  "license": "MIT",
+  "keywords": ["subagents", "workflows", "ultracode", "guardrail", "quota"],
+  "userConfig": {
+    "total_spawns_trip": { "type": "number", "title": "Total spawns: trip", "description": "Refuse new subagents once a session has started this many. 0 turns the rule off.", "default": 120, "min": 0 },
+    "spawn_rate_trip": { "type": "number", "title": "Spawns per minute: trip", "description": "Trip when this many subagents start within 60 seconds. 0 turns the rule off.", "default": 40, "min": 0 },
+    "spawn_burst_trip": { "type": "number", "title": "Spawns per 10 seconds: trip", "description": "Trip when this many subagents start within 10 seconds. A workflow runs up to 16 at once. 0 turns the rule off.", "default": 24, "min": 0 },
+    "running_concurrent_trip": { "type": "number", "title": "Running at once: trip", "description": "Trip when this many subagents are running at the same time. 0 turns the rule off.", "default": 32, "min": 0 },
+    "max_depth_trip": { "type": "number", "title": "Nesting depth: trip", "description": "Trip when Agent-tool subagents nest this deep. 0 turns the rule off.", "default": 4, "min": 0 },
+    "quota_burn_trip": { "type": "number", "title": "5-hour quota burn: trip (points per minute)", "description": "Trip when the 5-hour usage window climbs this many percentage points per minute. 0 turns the rule off.", "default": 5, "min": 0 },
+    "quota_burn_warn": { "type": "number", "title": "5-hour quota burn: warn (points per minute)", "description": "Warn at this burn rate. 0 turns the warning off.", "default": 2, "min": 0 },
+    "quota_window_min": { "type": "number", "title": "Quota burn window (minutes)", "description": "How many minutes of 5-hour readings the burn rate is measured over.", "default": 5, "min": 1, "max": 60 },
+    "quota_used_trip": { "type": "number", "title": "5-hour quota used: trip (percent)", "description": "Trip when the 5-hour window reaches this percent used. 0 turns the rule off.", "default": 0, "min": 0, "max": 100 },
+    "stop_running": { "type": "boolean", "title": "Stop running agents on trip", "description": "On a trip, stop subagents and workflows that are already running (TaskStop).", "default": true },
+    "abort_turn": { "type": "boolean", "title": "Abort the current turn on trip", "description": "On a trip, also interrupt the main conversation's current turn.", "default": false }
+  }
+}
