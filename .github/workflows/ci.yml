@@ -29,6 +29,36 @@ jobs:
           set -euo pipefail
           ./fanoutfuse replay fixtures/69332.yaml | tee "$RUNNER_TEMP/replay.txt"
           grep -Eq '^TRIP rule=spawn_(burst|rate) ' "$RUNNER_TEMP/replay.txt"
+  plugin:
+    # The Claude Code plugin: manifest and marketplace validation, every
+    # spawn-path test through the real hooks module, strict typecheck, and
+    # README/plugin.json claims against the code defaults. Offline: no sign-in.
+    runs-on: ubuntu-latest
+    env:
+      CLAUDE_CODE_VERSION: '2.1.300'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Claude Code
+        run: npm install -g --no-audit --no-fund "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}" && claude --version
+      - name: Validate plugin and marketplace
+        env:
+          HOME: ${{ runner.temp }}/home
+        run: |
+          mkdir -p "$HOME"
+          claude plugin validate --strict plugin
+          claude plugin validate --strict .
+      - name: Plugin tests
+        env:
+          HOME: ${{ runner.temp }}/home
+        run: claude plugin test plugin
+      - name: Typecheck
+        working-directory: plugin
+        run: npm ci --no-audit --no-fund && npm run typecheck
+      - name: README and plugin.json match the code
+        run: python3 scripts/check-plugin-claims.py
   lint:
     runs-on: ubuntu-latest
     steps:
