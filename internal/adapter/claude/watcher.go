@@ -160,10 +160,25 @@ func (w *Watcher) scan(watcher *fsnotify.Watcher, emit func(model.Event)) {
 }
 func LiveRegistry(root string) []model.Session { ss, _ := Sessions(root); return ss }
 func identity(path string) (sid, aid string, ok bool) {
-	if filepath.Base(filepath.Dir(path)) == "subagents" && strings.HasPrefix(filepath.Base(path), "agent-") {
-		sid = filepath.Base(filepath.Dir(filepath.Dir(path)))
-		aid = strings.TrimSuffix(strings.TrimPrefix(filepath.Base(path), "agent-"), ".jsonl")
+	base := filepath.Base(path)
+	dir := filepath.Dir(path)
+	isAgent := strings.HasPrefix(base, "agent-") && strings.HasSuffix(base, ".jsonl")
+	if filepath.Base(dir) == "subagents" && isAgent {
+		sid = filepath.Base(filepath.Dir(dir))
+		aid = strings.TrimSuffix(strings.TrimPrefix(base, "agent-"), ".jsonl")
 		return sid, aid, true
+	}
+	// Workflow agents: <session>/subagents/workflows/<run-id>/agent-<id>.jsonl
+	if workflows := filepath.Dir(dir); filepath.Base(workflows) == "workflows" && filepath.Base(filepath.Dir(workflows)) == "subagents" {
+		if !isAgent {
+			return "", "", false // journal.jsonl and other run files are not transcripts
+		}
+		sid = filepath.Base(filepath.Dir(filepath.Dir(workflows)))
+		aid = strings.TrimSuffix(strings.TrimPrefix(base, "agent-"), ".jsonl")
+		return sid, aid, true
+	}
+	if filepath.Base(dir) == "subagents" {
+		return "", "", false
 	}
 	if strings.HasSuffix(path, ".jsonl") {
 		return strings.TrimSuffix(filepath.Base(path), ".jsonl"), "main", true

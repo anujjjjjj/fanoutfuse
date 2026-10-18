@@ -132,11 +132,48 @@ func TestInstallIdempotentPreservesSettings(t *testing.T) {
 func TestDoctorRejectsAsync(t *testing.T) {
 	root := t.TempDir()
 	for _, extra := range []string{`,"async":true`, ``} {
-		s := `{"hooks":{"PreToolUse":[{"matcher":"^(Task|Agent)$","hooks":[{"type":"command","command":"/tmp/fanoutfuse guard"` + extra + `}]}]}}`
+		s := `{"hooks":{"PreToolUse":[{"matcher":"^(Task|Agent|Workflow)$","hooks":[{"type":"command","command":"/tmp/fanoutfuse guard"` + extra + `}]}]}}`
 		_ = os.WriteFile(filepath.Join(root, "settings.json"), []byte(s), 0600)
 		found, sync, err := HookHealth(root)
 		if err != nil || !found || sync != (extra == "") {
 			t.Fatal(found, sync, err)
 		}
+	}
+}
+
+// A Workflow launch is the entry point for workflow and ultracode fan-out;
+// the guard must deny it once a fuse is set, like Agent and Task.
+func TestGuardDeniesWorkflowLaunch(t *testing.T) {
+	home := t.TempDir()
+	if err := WriteFuse(home, "s1", "reason"); err != nil {
+		t.Fatal(err)
+	}
+	var out bytes.Buffer
+	if err := Guard(home, strings.NewReader(`{"session_id":"s1","tool_name":"Workflow"}`), &out); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(out.String(), `"permissionDecision":"deny"`) {
+		t.Fatalf("Workflow not denied: %q", out.String())
+	}
+}
+
+func TestDoctorFlagsLegacyMatcher(t *testing.T) {
+	root := t.TempDir()
+	s := `{"hooks":{"PreToolUse":[{"matcher":"^(Task|Agent)$","hooks":[{"type":"command","command":"/tmp/fanoutfuse guard"}]}]}}`
+	_ = os.WriteFile(filepath.Join(root, "settings.json"), []byte(s), 0600)
+	found, sync, err := HookHealth(root)
+	if err != nil || !found || sync {
+		t.Fatal("legacy Task|Agent matcher must be reported as needing reinstall", found, sync, err)
+	}
+}
+
+func TestInstallMatcherCoversWorkflow(t *testing.T) {
+	root := t.TempDir()
+	if err := Install(root, "/tmp/fanoutfuse", false); err != nil {
+		t.Fatal(err)
+	}
+	b, _ := os.ReadFile(filepath.Join(root, "settings.json"))
+	if !strings.Contains(string(b), `"matcher": "^(Task|Agent|Workflow)$"`) {
+		t.Fatalf("matcher does not cover Workflow: %s", b)
 	}
 }

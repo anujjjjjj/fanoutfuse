@@ -72,7 +72,7 @@ func Guard(home string, in io.Reader, out io.Writer) error {
 	if err := json.NewDecoder(io.LimitReader(in, 1<<20)).Decode(&hook); err != nil {
 		return nil
 	}
-	if hook.Tool != "" && hook.Tool != "Agent" && hook.Tool != "Task" {
+	if hook.Tool != "" && hook.Tool != "Agent" && hook.Tool != "Task" && hook.Tool != "Workflow" {
 		return nil
 	}
 	if !ValidID(hook.Session) {

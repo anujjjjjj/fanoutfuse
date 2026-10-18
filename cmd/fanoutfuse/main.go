@@ -22,7 +22,7 @@ import (
 	"github.com/anujjjjjj/fanoutfuse/internal/tui"
 )
 
-var version = "1.0.0"
+var version = "dev" // release builds set this with -ldflags "-X main.version=..."
 
 func main() {
 	if err := run(os.Args[1:], os.Stdin, os.Stdout); err != nil {
