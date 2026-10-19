@@ -2,8 +2,20 @@
 
 A fuse for runaway subagent fan-out in Claude Code. When a session starts too
 many subagents, too fast, too deep, or burns the 5-hour usage window too
-quickly, FanoutFuse refuses the next spawn on every path (Agent/Task,
-Workflow, ultracode) and stops the agents and workflows already running.
+quickly, FanoutFuse refuses the next spawn and stops the agents and workflows
+already running.
+
+What has been verified so far (details in [What it catches](#what-it-catches)):
+
+| | Status |
+| :- | :- |
+| Agent tool, Workflow, Ultracode | real runs on Claude Code 2.1.300, Linux ([evidence](docs/evidence/README.md)) |
+| `Task` alias, forks, nested spawns | unit tests only |
+| Agent-team teammates | untested |
+| macOS | untested |
+| Claude Code versions other than 2.1.300 | untested |
+| 5-hour quota rules (`quota_burn`, `quota_used`) in a live session | not run; unit tests only |
+| Options set through `/plugin configure` in a live session | not run; defaults and environment variables were used |
 
 It is a Claude Code plugin. No daemon, no tmux, no network calls, no telemetry.
 
@@ -13,28 +25,33 @@ It is a Claude Code plugin. No daemon, no tmux, no network calls, no telemetry.
 claude plugin install fanoutfuse --marketplace anujjjjjj/fanoutfuse
 ```
 
-That one command needs Claude Code 2.1.292 or later. Inside a session (2.1.275 or later):
+Claude Code's docs say this one command needs 2.1.292 or later, and the in-session
+form below 2.1.275 or later. Neither minimum has been tested here; only 2.1.300 has.
 
 ```text
 /plugin install fanoutfuse --marketplace anujjjjjj/fanoutfuse
 ```
 
-Tested on Claude Code 2.1.300. Change limits with `/plugin configure fanoutfuse`
-or `/config`, or with environment variables (see [Configuration](#configuration)).
+Tested on Claude Code 2.1.300 on Linux only. Change limits with environment
+variables, or with `/plugin configure fanoutfuse` or `/config` (not yet run in a
+live session); see [Configuration](#configuration).
 
 ## What it catches
 
-Claude Code raises the plugin's `agent.spawn` hook before each subagent starts:
-Agent/Task calls, each agent of a workflow, and forks. The tools that start
-subagents also pass through its `tool.call` hook.
+The plugin refuses spawns in its `agent.spawn` hook, and refuses the tools that
+start subagents in its `tool.call` hook. Real runs (Claude Code 2.1.300, Linux)
+cover the Agent tool, Workflow and Ultracode. The `Task` alias, forks and nested
+spawns are covered by unit tests only. Agent-team teammates are untested.
 
 | Spawn path | Refused at | Unit tests | Real run |
 | :- | :- | :- | :- |
-| Agent tool (and its `Task` alias) | `agent.spawn`; `Agent`/`Task` calls while tripped | `plugin/tests/spawn-paths.test.ts` | [agent](docs/evidence/2026-10-18/agent) |
+| Agent tool | `agent.spawn`; `Agent` calls while tripped | `plugin/tests/spawn-paths.test.ts` | [agent](docs/evidence/2026-10-18/agent) |
+| `Task` alias | `agent.spawn`; `Task` calls while tripped | `plugin/tests/spawn-paths.test.ts` | not recorded (unit tests only) |
 | Workflow agents | `agent.spawn` (each agent, as `workflow-subagent`); `Workflow` calls while tripped | `plugin/tests/spawn-paths.test.ts` | [workflow](docs/evidence/2026-10-18/workflow) |
 | Ultracode | Same as Workflow: ultracode runs its work as workflows | Workflow tests | [ultracode](docs/evidence/2026-10-18/ultracode) |
-| Forks | `agent.spawn` (`fork: true`) | `plugin/tests/spawn-paths.test.ts` | not recorded |
-| Nested spawns | `agent.spawn`, depth from `parentAgentId` | `plugin/tests/spawn-paths.test.ts` | not recorded |
+| Forks | `agent.spawn` (`fork: true`) | `plugin/tests/spawn-paths.test.ts` | not recorded (unit tests only) |
+| Nested spawns | `agent.spawn`, depth from `parentAgentId` | `plugin/tests/spawn-paths.test.ts` | not recorded (unit tests only) |
+| Agent-team teammates | not known | none | untested |
 
 Workflow agents never reach `PreToolUse:Agent`, so a `PreToolUse` hook matched
 on `Agent|Task` misses them. FanoutFuse gates the spawn itself.
@@ -83,22 +100,24 @@ A rule trips when its value reaches the trip number. 0 turns a level off.
 | `quota_burn` | 5-hour window, percentage points per minute | 2 | 5 |
 | `quota_used` | 5-hour window, percent used | off | off |
 
-A workflow runs up to 16 agents at once, so the burst and concurrency defaults
-leave room for one full workflow.
-
 `quota_burn` reads the 5-hour window Claude Code reports after each response.
 It measures over the last 5 minutes, counts at least one minute of elapsed time,
 and ignores moves under 3 points. Readings jitter by a point, so it uses the
-highest reading so far. A new window (a new reset time) starts over. With an API
-key instead of a subscription there is no 5-hour window, and both quota rules
-stay idle.
+highest reading so far. A new window (a new reset time) starts over. If Claude
+Code reports no 5-hour window (for example with an API key instead of a
+subscription), the quota rules have nothing to measure.
+
+Neither quota rule has been run in a live session. They are covered by unit
+tests only (`plugin/tests/stop-and-quota.test.ts`).
 
 Counts are per session. A new session starts at zero.
 
 ## Configuration
 
 Order, lowest to highest: built-in defaults, plugin options (`/plugin configure
-fanoutfuse` or `/config`), environment variables.
+fanoutfuse` or `/config`), environment variables. Environment variables were
+used in the real runs; setting options through `/plugin configure` or `/config`
+has not been run in a live session.
 
 | Setting | Plugin option | Environment | Default |
 | :- | :- | :- | :- |
@@ -135,7 +154,7 @@ percent of the 5-hour window.
 ```sh
 cd plugin
 claude plugin validate --strict .
-claude plugin test .         # every spawn path, the stop ladder, quota burn, config
+claude plugin test .         # spawn paths, the stop ladder, quota burn, config
 npm ci && npm run typecheck  # tsc --strict
 ```
 
