@@ -9,6 +9,11 @@ import (
 	"strings"
 )
 
+// SpawnMatcher covers every tool that starts subagents: Agent (alias Task) and
+// Workflow, which also carries ultracode runs. Workflow agents do not pass
+// through PreToolUse:Agent, so the Workflow launch itself must be gated.
+const SpawnMatcher = "^(Task|Agent|Workflow)$"
+
 func owned(h map[string]any) bool {
 	cmd, _ := h["command"].(string)
 	exe, _ := os.Executable()
@@ -40,7 +45,7 @@ func HookHealth(root string) (bool, bool, error) {
 			m, _ := h.(map[string]any)
 			if owned(m) {
 				found = true
-				if m["async"] == true || e["async"] == true || e["matcher"] != "^(Task|Agent)$" {
+				if m["async"] == true || e["async"] == true || e["matcher"] != SpawnMatcher {
 					sync = false
 				}
 			}
@@ -108,7 +113,7 @@ func Install(root, executable string, remove bool) error {
 		if err != nil {
 			return err
 		}
-		kept = append(kept, map[string]any{"matcher": "^(Task|Agent)$", "hooks": []any{map[string]any{"type": "command", "command": cmd}}})
+		kept = append(kept, map[string]any{"matcher": SpawnMatcher, "hooks": []any{map[string]any{"type": "command", "command": cmd}}})
 	}
 	if len(kept) > 0 {
 		hooks["PreToolUse"] = kept

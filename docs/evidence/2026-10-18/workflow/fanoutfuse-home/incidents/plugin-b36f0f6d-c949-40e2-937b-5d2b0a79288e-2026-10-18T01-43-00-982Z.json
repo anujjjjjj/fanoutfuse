@@ -1,0 +1,47 @@
+{
+  "session": "b36f0f6d-c949-40e2-937b-5d2b0a79288e",
+  "trip": {
+    "rule": "total_spawns",
+    "level": "trip",
+    "value": 3,
+    "threshold": 3,
+    "at": 1792287780982,
+    "reason": "FanoutFuse tripped total_spawns: 3 >= 3"
+  },
+  "counts": {
+    "spawned": {
+      "agent": 0,
+      "workflow": 2,
+      "fork": 0
+    },
+    "denied": {
+      "agent": 0,
+      "workflow": 3,
+      "fork": 0,
+      "tool": 0
+    }
+  },
+  "metrics": {
+    "spawn_rate": 2,
+    "spawn_burst": 2,
+    "total_spawns": 2,
+    "max_depth": 0,
+    "running_concurrent": 2,
+    "tokens_per_min": 0,
+    "growth_factor": 0,
+    "growth_n": 2,
+    "breadth_per_parent": 0,
+    "quota_burn": 0,
+    "quota_used": 26
+  },
+  "stops": [
+    {
+      "id": "wmj5mdm8h",
+      "attempt": 1,
+      "ok": true,
+      "detail": "{\"message\":\"Successfully stopped task: wmj5mdm8h (FanoutFuse proof: five sleeping agents)\",\"task_id\":\"wmj5mdm8h\",\"task_type\":\"local_workflow\",\"command\":\"FanoutFuse proof: five sleeping agents\"}"
+    }
+  ],
+  "stopVerified": true,
+  "abortedTurn": null
+}

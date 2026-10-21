@@ -1,0 +1,4 @@
+{"type":"launched"}
+{"type":"started","key":"v2:0bdbc9bde7cb5caab96cbd9c6d5ca3fc857690589a68d4386c31064dec51d7d8","agentId":"a9270d81806ffec7a","label":"write:a.txt","phase":"Write"}
+{"type":"failed","key":"v2:59f4c1c45c1dfb6af44300116e45a712b9adc46dd348d49216c22ecb3830bae2","agentId":""}
+{"type":"failed","key":"v2:bf3b8b19f5b8eaf78cf76227e66304adeb033b6a0eb2b57e505cebe2d58b57cf","agentId":""}

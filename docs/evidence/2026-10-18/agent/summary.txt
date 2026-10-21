@@ -1,0 +1,12 @@
+== agent
+workflow tool calls:      0
+plugin toasts:            1
+task stopped events:      1
+incident:                 /workspace/fanoutfuse/repo/docs/evidence/2026-10-18/agent/fanoutfuse-home/incidents/plugin-cd2ab4b0-bb4e-47cf-b530-ee1e98952a9d-2026-10-18T01-42-52-158Z.json
+  "reason": "FanoutFuse tripped total_spawns: 2 >= 2"
+  "stopVerified": true,
+  "abortedTurn": null
+  counts (started vs refused per spawn path):
+    "spawned": "agent":1 "workflow":0 "fork":0 "denied": "agent":2 "workflow":0 "fork":0 "tool":0
+  stops:
+    "id":"afb5dd35691d0e2fa" "attempt":1 "ok":true

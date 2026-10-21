@@ -1,0 +1,6 @@
+{"type":"launched"}
+{"type":"started","key":"v2:de23cd808c1ff73d5f4dc7a14b6787ad7f7d0c801622ae7415d560905f5a0ae4","agentId":"aa1ed1f1a612621c6","label":"s1","phase":"Sleep"}
+{"type":"failed","key":"v2:7817c9de974493cd28867b582ed219796627bf440004e2fc712ea318e1cc0a3e","agentId":""}
+{"type":"failed","key":"v2:2e65a4628520749a9a6a1dbabb6b51098cc57d7db2029a5e827566731e3be4a9","agentId":""}
+{"type":"failed","key":"v2:b00935336cf1566f40282c915de091e5477ea7cbcc120b7172d9b06bc7726820","agentId":""}
+{"type":"started","key":"v2:98c6a5f911de5a2c4713593456d87c13e30e961042607150bd7dc5715f1ae25c","agentId":"a4442852ee0975876","label":"s4","phase":"Sleep"}

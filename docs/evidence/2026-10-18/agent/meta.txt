@@ -1,0 +1,3 @@
+started 2026-10-18T01:42:47Z
+ended 2026-10-18T01:42:57Z
+trip total_spawns=2

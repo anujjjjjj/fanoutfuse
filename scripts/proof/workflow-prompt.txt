@@ -1,0 +1,8 @@
+Call the Workflow tool exactly once with this exact script (do not modify it):
+
+export const meta = { name: 'fanoutfuse-proof', description: 'FanoutFuse proof: five sleeping agents', phases: [{ title: 'Sleep' }] }
+phase('Sleep')
+const r = await parallel([1, 2, 3, 4, 5].map((i) => () => agent('Run the Bash command `sleep 60` twice in a row, then reply SLEPT-' + i + '.', { label: 's' + i, model: 'haiku' })))
+return r
+
+Right after the Workflow call returns, run the Bash command `sleep 30` once (so the session stays open while the workflow runs), then report the workflow's status and what each agent returned if you know it. Do not call TaskStop yourself and do not start any other agents.
